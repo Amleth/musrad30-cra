@@ -3,13 +3,13 @@ import Box from '@material-ui/core/Box'
 import MaterialTable from 'material-table'
 import { withRouter } from 'react-router'
 
-class Musicians extends React.Component {
+class CompWorks extends React.Component {
   render() {
     return (
       <div>
         <Box>
           <MaterialTable 
-          title = 'Index des Musiciens'
+          title = 'Oeuvres composées'
           options={
             {
               filtering: true
@@ -23,4 +23,4 @@ class Musicians extends React.Component {
   }
 }
 
-export default withRouter(Musicians)
+export default withRouter(CompWorks)

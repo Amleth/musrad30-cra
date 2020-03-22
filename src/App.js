@@ -1,4 +1,4 @@
-  import React from 'react'
+import React from 'react'
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
 import Musician from './components/musician'
 import Program from './components/program'
@@ -29,8 +29,8 @@ export default function App() {
           <Route exact path='/'>
             <div>
               Et si on allait voir le{' '}
-              <Link to='/musician/0cedf2af-88b8-42ea-a2e0-45adcac126d6'>
-                musicien d'id <code>0cedf2af-88b8-42ea-a2e0-45adcac126d6</code>
+              <Link to='/musician/02a7add6-4982-42e2-936d-7231909d8d8d'>
+                musicien d'id <code>02a7add6-4982-42e2-936d-7231909d8d8d</code>
               </Link>
               &nbsp;?
             </div>

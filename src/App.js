@@ -1,7 +1,10 @@
-import React from 'react'
+  import React from 'react'
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
 import Musician from './components/musician'
+import Program from './components/program'
 import Musicians from './components/musicians'
+import Programs from './components/programs'
+import CompWorks from './components/composed_works'
 
 export default function App() {
   return (
@@ -13,6 +16,12 @@ export default function App() {
           </li>
           <li>
             <Link to='/musicians'>Musiciens</Link>
+          </li>
+          <li>
+            <Link to='/programs'>Programmes</Link>
+          </li>
+          <li>
+            <Link to='/composed_works'>Oeuvres Composées</Link>
           </li>
         </ul>
         <hr />
@@ -27,7 +36,10 @@ export default function App() {
             </div>
           </Route>
           <Route path='/musicians' children={Musicians} />
+          <Route path='/programs' children={Programs} />
+          <Route path='/composed_works' children={CompWorks} />
           <Route path='/musician/:id' children={Musician} />
+          <Route path='/program/:id' children={Program} />
         </Switch>
       </div>
     </Router>

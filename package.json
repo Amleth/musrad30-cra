@@ -12,6 +12,7 @@
     "@material-ui/core": "latest",
     "axios": "^0.19.2",
     "clsx": "latest",
+    "material-table": "^1.57.2",
     "react": "latest",
     "react-dom": "latest",
     "react-router-dom": "^5.1.2",

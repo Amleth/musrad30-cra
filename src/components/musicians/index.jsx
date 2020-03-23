@@ -8,6 +8,9 @@ class Musicians extends React.Component {
     return (
       <Container>
         <Box>
+          <MaterialTable>
+
+          </MaterialTable>
         </Box>
       </Container>
     )

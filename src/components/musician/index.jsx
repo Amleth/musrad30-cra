@@ -16,20 +16,24 @@ import {
 class Musician extends React.Component {
   constructor(props) {
     super(props)
-    this.state = { data: null }
+    this.state = { 
+      composerData: null,
+      composedWorks: ["Sonate", "Gavotte", "Fugue", "Bourrée"],
+      performedWorks: [],
+     }
   }
 
   componentDidMount() {
     const id = this.props.match.params.id
 
-    axios.get(`http://data-iremus.huma-num.fr/musrad30/musician/${id}`).then(res => {
-      this.setState({ data: res.data })
+    axios.get('http://data-iremus.huma-num.fr/musrad30/musician/' + id).then(res => {
+      this.setState({ composerData: res.data })
     })
   }
 
   render() {
-    if (!this.state.data) {
-      return <div>Rien…</div>
+    if (!this.state.composerData) {
+      return <div>Données en cours de téléchargement...</div>
     } else {
       return (
         <Container>
@@ -41,9 +45,9 @@ class Musician extends React.Component {
             <Box mx='auto'>
               <Typography variant='h6' component='h6'>
                 <Grid container direction='row' justify='space-evenly' alignItems='center'>
-                  <Box p={2}>{this.state.data.surname}</Box>
-                  <Box p={2}>{this.state.data.givenName}</Box>
-                  <Box p={2}>({this.state.data.birthDate} - {this.state.data.deathDate})</Box>
+                  <Box p={2}>{this.state.composerData.surname}</Box>
+                  <Box p={2}>{this.state.composerData.givenName}</Box>
+                  <Box p={2}>({this.state.composerData.birthDate} - {this.state.composerData.deathDate})</Box>
                 </Grid>
               </Typography>
             </Box>
@@ -57,7 +61,7 @@ class Musician extends React.Component {
                     statut :{" "}
                   </Typography>
                   <Typography variant='subtitle1' component='h3' display="inline">
-                    {this.state.data.status_label}
+                    {this.state.composerData.status_label}
                   </Typography>
 
                 </Box>
@@ -66,7 +70,7 @@ class Musician extends React.Component {
                     nationalite :{" "}
                   </Typography>
                   <Typography variant='subtitle1' component='h3' display="inline">
-                    {this.state.data.nationality_label}
+                    {this.state.composerData.nationality_label}
                   </Typography>
 
                 </Box>
@@ -75,7 +79,7 @@ class Musician extends React.Component {
                     style :{" "}
                   </Typography>
                   <Typography variant='subtitle1' component='h3' display="inline">
-                    {this.state.data.style_label}
+                    {this.state.composerData.style_label}
                   </Typography>
                 </Box>
               </Box>
@@ -86,7 +90,7 @@ class Musician extends React.Component {
                   Infos :
                 </Typography>
                 <Typography variant='subtitle1' component='h3'>
-                  {this.state.data.description}
+                  {this.state.composerData.description}
                 </Typography>
               </Box>
             </Grid>
@@ -109,7 +113,9 @@ class Musician extends React.Component {
                     <TableCell align='right'>Informations de diffusion</TableCell>
                   </TableRow>
                 </TableHead>
-                <TableBody></TableBody>
+                <TableBody>
+
+                </TableBody>
               </Table>
             </Box>
           </Grid>

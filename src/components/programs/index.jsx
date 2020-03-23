@@ -1,24 +1,15 @@
 import React from 'react'
-import Box from '@material-ui/core/Box'
+import { Box, Container} from '@material-ui/core/'
 import MaterialTable from 'material-table'
 import { withRouter } from 'react-router'
 
 class Programs extends React.Component {
   render() {
     return (
-      <div>
+      <Container>
         <Box>
-          <MaterialTable 
-          title = 'Index des Programmes'
-          options={
-            {
-              filtering: true
-            }
-          }
-          >
-          </MaterialTable>
         </Box>
-      </div>
+      </Container>
     )
   }
 }

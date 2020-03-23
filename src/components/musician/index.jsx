@@ -1,18 +1,16 @@
 import React from 'react'
-import Box from '@material-ui/core/Box'
-import Grid from '@material-ui/core/Grid'
-import Typography from '@material-ui/core/Typography'
-import Table from '@material-ui/core/Typography'
 import { withRouter } from 'react-router'
 import axios from 'axios'
 import {
+  Box,
+  Grid,
   Container,
-  Card,
-  CardContent,
+  Table,
   TableHead,
   TableRow,
   TableBody,
-  TableCell
+  TableCell,
+  Typography
 } from '@material-ui/core'
 
 class Musician extends React.Component {
@@ -41,51 +39,61 @@ class Musician extends React.Component {
             </Typography>
 
             <Box mx='auto'>
-              <Grid container direction='row' justify='space-evenly' alignItems='center'>
-                <Box p={2}>{this.state.data.surname}</Box>
-                <Box p={2}>{this.state.data.givenName}</Box>
-                <Box p={2}>(Anaissance - Amort)</Box>
-              </Grid>
+              <Typography variant='h6' component='h6'>
+                <Grid container direction='row' justify='space-evenly' alignItems='center'>
+                  <Box p={2}>{this.state.data.surname}</Box>
+                  <Box p={2}>{this.state.data.givenName}</Box>
+                  <Box p={2}>({this.state.data.birthDate} - {this.state.data.deathDate})</Box>
+                </Grid>
+              </Typography>
             </Box>
           </Grid>
 
-          <Grid spacing={4} Box direction='row'>
-            <Box
-              Box
-              display='flex'
-              flexWrap='nowrap'
-              direction='column'
-              justify='space-between'
-              alignItems='flex-start'
-            >
-              <Box container direction='column'>
-                <Box m={3}>
-                  <Typography variant='button' component='h3'>
-                    statut :
+          <Grid container spacing={3}>
+            <Grid item xs={6}>
+              <Box mx='auto' direction='column'>
+                <Box>
+                  <Typography variant='button' component='h3' display="inline">
+                    statut :{" "}
                   </Typography>
-                </Box>
-                <Box m={3}>
-                  <Typography gutterBottom variant='button' component='h3'>
-                    nationalite :
+                  <Typography variant='subtitle1' component='h3' display="inline">
+                    {this.state.data.status_label}
                   </Typography>
+
                 </Box>
-                <Box m={3}>
-                  <Typography variant='button' component='h3'>
-                    style :
+                <Box>
+                  <Typography gutterBottom variant='button' component='h3' display="inline">
+                    nationalite :{" "}
+                  </Typography>
+                  <Typography variant='subtitle1' component='h3' display="inline">
+                    {this.state.data.nationality_label}
+                  </Typography>
+
+                </Box>
+                <Box>
+                  <Typography variant='button' component='h3' display="inline">
+                    style :{" "}
+                  </Typography>
+                  <Typography variant='subtitle1' component='h3' display="inline">
+                    {this.state.data.style_label}
                   </Typography>
                 </Box>
               </Box>
-
-              <Box m={3}>
+            </Grid>
+            <Grid item xs={6}>
+              <Box>
                 <Typography gutterBottom variant='button' component='h3'>
                   Infos :
                 </Typography>
-                <Typography varaint='body2' color='textSecondary'>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas non laoreet est.
+                <Typography variant='subtitle1' component='h3'>
+                  {this.state.data.description}
                 </Typography>
               </Box>
-            </Box>
+            </Grid>
+
+
           </Grid>
+
           {/*Si le musicien possede des oeuvres alors les afficher*/}
           <Grid>
             <Box m={3}>
@@ -123,6 +131,7 @@ class Musician extends React.Component {
                 <TableBody></TableBody>
               </Table>
             </Box>
+
           </Grid>
         </Container>
       )

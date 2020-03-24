@@ -16,111 +16,66 @@ import {
 class Musician extends React.Component {
   constructor(props) {
     super(props)
-    this.state = { 
-      composerData: null,
-      composedWorks: ["Sonate", "Gavotte", "Fugue", "Bourrée"],
-      performedWorks: [],
-     }
+    this.state = {
+      musicianData: null,
+    }
   }
 
   componentDidMount() {
     const id = this.props.match.params.id
 
     axios.get('http://data-iremus.huma-num.fr/musrad30/musician/' + id).then(res => {
-      this.setState({ composerData: res.data })
+      this.setState({ musicianData: res.data })
     })
   }
 
   render() {
-    if (!this.state.composerData) {
+    if (!this.state.musicianData) {
       return <div>Données en cours de téléchargement...</div>
     } else {
-      return (
-        <Container>
-          <Grid>
-            <Typography variant='h5' component='h2'>
-              Affichage du musicien d'id <code>{this.props.match.params.id}</code>
-            </Typography>
 
-            <Box mx='auto'>
-              <Typography variant='h6' component='h6'>
-                <Grid container direction='row' justify='space-evenly' alignItems='center'>
-                  <Box p={2}>{this.state.composerData.surname}</Box>
-                  <Box p={2}>{this.state.composerData.givenName}</Box>
-                  <Box p={2}>({this.state.composerData.birthDate} - {this.state.composerData.deathDate})</Box>
-                </Grid>
-              </Typography>
-            </Box>
-          </Grid>
+      let tableCompositions = null
+      let tableInterpretations = null
 
-          <Grid container spacing={3}>
-            <Grid item xs={6}>
-              <Box mx='auto' direction='column'>
-                <Box>
-                  <Typography variant='button' component='h3' display="inline">
-                    statut :{" "}
-                  </Typography>
-                  <Typography variant='subtitle1' component='h3' display="inline">
-                    {this.state.composerData.status_label}
-                  </Typography>
-
-                </Box>
-                <Box>
-                  <Typography gutterBottom variant='button' component='h3' display="inline">
-                    nationalite :{" "}
-                  </Typography>
-                  <Typography variant='subtitle1' component='h3' display="inline">
-                    {this.state.composerData.nationality_label}
-                  </Typography>
-
-                </Box>
-                <Box>
-                  <Typography variant='button' component='h3' display="inline">
-                    style :{" "}
-                  </Typography>
-                  <Typography variant='subtitle1' component='h3' display="inline">
-                    {this.state.composerData.style_label}
-                  </Typography>
-                </Box>
-              </Box>
-            </Grid>
-            <Grid item xs={6}>
-              <Box>
-                <Typography gutterBottom variant='button' component='h3'>
-                  Infos :
-                </Typography>
-                <Typography variant='subtitle1' component='h3'>
-                  {this.state.composerData.description}
-                </Typography>
-              </Box>
-            </Grid>
-
-
-          </Grid>
-
-          {/*Si le musicien possede des oeuvres alors les afficher*/}
+      if (this.state.musicianData.composedWorks !== undefined) {
+        let compositionData = this.state.musicianData.composedWorks;
+        console.log(compositionData)
+        tableCompositions =
           <Grid>
             <Box m={3}>
               <Typography variant='h5' component='h3'>
                 Oeuvres Composées
-              </Typography>
+          </Typography>
             </Box>
             <Box>
               <Table>
                 <TableHead>
                   <TableRow>
-                    <TableCell align='right'>Titre</TableCell>
-                    <TableCell align='right'>Informations de diffusion</TableCell>
+                    <TableCell align='right'>Titre de l'oeuvre</TableCell>
+                    <TableCell align='right'>Lien d'accès</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-
+                  {compositionData.map(row => 
+                    <TableRow key={row}>
+                      <TableCell component="th" scope="row">
+                        {row.work_name}
+                      </TableCell>
+                      <TableCell align="right">{row.work}</TableCell>
+                    </TableRow>
+                  )
+                  }
                 </TableBody>
               </Table>
             </Box>
           </Grid>
-          {/*Si le musicien interprete des oeuvres alors les afficher*/}
-          <Grid>
+      }
+
+      const isPerformer = null
+      if (this.state.musicianData.performedWorks !== undefined) {
+        console.log('Ok performer');
+        /*
+        <Grid>
             <Box m={3}>
               <Typography variant='h5' component='h3'>
                 Oeuvres Interpretées
@@ -139,6 +94,71 @@ class Musician extends React.Component {
             </Box>
 
           </Grid>
+        */
+      }
+
+
+      return (
+        <Container>
+          <Grid>
+            <Typography variant='h5' component='h2'>
+              Affichage du musicien d'id <code>{this.props.match.params.id}</code>
+            </Typography>
+
+            <Box mx='auto'>
+              <Typography variant='h6' component='h6'>
+                <Grid container direction='row' justify='space-evenly' alignItems='center'>
+                  <Box p={2}>{this.state.musicianData.surname}</Box>
+                  <Box p={2}>{this.state.musicianData.givenName}</Box>
+                  <Box p={2}>({this.state.musicianData.birthDate} - {this.state.musicianData.deathDate})</Box>
+                </Grid>
+              </Typography>
+            </Box>
+          </Grid>
+
+          <Grid container spacing={3}>
+            <Grid item xs={6}>
+              <Box mx='auto' direction='column'>
+                <Box>
+                  <Typography variant='button' component='h3' display="inline">
+                    statut :{" "}
+                  </Typography>
+                  <Typography variant='subtitle1' component='h3' display="inline">
+                    {this.state.musicianData.status_label}
+                  </Typography>
+
+                </Box>
+                <Box>
+                  <Typography gutterBottom variant='button' component='h3' display="inline">
+                    nationalite :{" "}
+                  </Typography>
+                  <Typography variant='subtitle1' component='h3' display="inline">
+                    {this.state.musicianData.nationality_label}
+                  </Typography>
+
+                </Box>
+                <Box>
+                  <Typography variant='button' component='h3' display="inline">
+                    style :{" "}
+                  </Typography>
+                  <Typography variant='subtitle1' component='h3' display="inline">
+                    {this.state.musicianData.style_label}
+                  </Typography>
+                </Box>
+              </Box>
+            </Grid>
+            <Grid item xs={6}>
+              <Box>
+                <Typography gutterBottom variant='button' component='h3'>
+                  Infos :
+                </Typography>
+                <Typography variant='subtitle1' component='h3'>
+                  {this.state.musicianData.description}
+                </Typography>
+              </Box>
+            </Grid>
+          </Grid>
+          {tableCompositions}
         </Container>
       )
     }

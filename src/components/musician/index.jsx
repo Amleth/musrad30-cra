@@ -39,7 +39,6 @@ class Musician extends React.Component {
 
       if (this.state.musicianData.composedWorks !== undefined) {
         let compositionData = this.state.musicianData.composedWorks;
-        console.log(compositionData)
         tableCompositions =
           <Grid>
             <Box m={3}>
@@ -56,7 +55,7 @@ class Musician extends React.Component {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {compositionData.map(row => 
+                  {compositionData.map(row =>
                     <TableRow key={row}>
                       <TableCell component="th" scope="row">
                         {row.work_name}

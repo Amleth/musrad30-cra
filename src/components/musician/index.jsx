@@ -29,6 +29,10 @@ class Musician extends React.Component {
     })
   }
 
+  handleClick(rang){
+    console.log(rang)
+  }
+
   render() {
     if (!this.state.musicianData) {
       return <div>Données en cours de téléchargement...</div>
@@ -56,7 +60,11 @@ class Musician extends React.Component {
                 </TableHead>
                 <TableBody>
                   {compositionData.map(row =>
-                    <TableRow key={row}>
+                    <TableRow key={row}
+                    onClick={() => {
+                      this.handleClick(row.work)
+                    }
+                    }>
                       <TableCell component="th" scope="row">
                         {row.work_name}
                       </TableCell>
@@ -71,9 +79,9 @@ class Musician extends React.Component {
       }
 
       if (this.state.musicianData.performedWorks !== undefined) {
-        let perfomanceData = this.state.musicianData.performedWorks;
+        let performanceData = this.state.musicianData.performedWorks;
         tableInterpretations =
-        <Grid>
+          <Grid>
             <Box m={3}>
               <Typography variant='h5' component='h3'>
                 Oeuvres Interpretées
@@ -88,8 +96,12 @@ class Musician extends React.Component {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                {perfomanceData.map(row =>
-                    <TableRow key={row}>
+                  {performanceData.map(row =>
+                    <TableRow key={row} onClick={
+                      () => {
+                        this.handleClick(row.work)
+                      }
+                    } >
                       <TableCell component="th" scope="row">
                         {row.work_name}
                       </TableCell>

@@ -2,7 +2,8 @@ import React from 'react'
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
 import Musician from './components/musician'
 import Program from './components/program'
-import Musicians from './components/musicians'
+import Composers from './components/composers'
+import Performers from './components/performers'
 import Programs from './components/programs'
 import CompWorks from './components/composed_works'
 
@@ -15,7 +16,10 @@ export default function App() {
             <Link to='/'>Home</Link>
           </li>
           <li>
-            <Link to='/musicians'>Musiciens</Link>
+            <Link to='/composers'>Compositeurs</Link>
+          </li>
+          <li>
+            <Link to='/performers'>Interprètes</Link>
           </li>
           <li>
             <Link to='/programs'>Programmes</Link>
@@ -35,7 +39,8 @@ export default function App() {
               &nbsp;?
             </div>
           </Route>
-          <Route path='/musicians' children={Musicians} />
+          <Route path='/composers' children={Composers} />
+          <Route path='/performers' children={Performers} />
           <Route path='/programs' children={Programs} />
           <Route path='/composed_works' children={CompWorks} />
           <Route path='/musician/:id' children={Musician} />

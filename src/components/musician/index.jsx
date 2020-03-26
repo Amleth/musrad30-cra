@@ -70,10 +70,9 @@ class Musician extends React.Component {
           </Grid>
       }
 
-      const isPerformer = null
       if (this.state.musicianData.performedWorks !== undefined) {
-        console.log('Ok performer');
-        /*
+        let perfomanceData = this.state.musicianData.performedWorks;
+        tableInterpretations =
         <Grid>
             <Box m={3}>
               <Typography variant='h5' component='h3'>
@@ -84,16 +83,24 @@ class Musician extends React.Component {
               <Table>
                 <TableHead>
                   <TableRow>
-                    <TableCell align='right'>Titre</TableCell>
-                    <TableCell align='right'>Informations de diffusion</TableCell>
+                    <TableCell align='right'>Titre de l'oeuvre</TableCell>
+                    <TableCell align='right'>Lien accès à l'oeuvre</TableCell>
                   </TableRow>
                 </TableHead>
-                <TableBody></TableBody>
+                <TableBody>
+                {perfomanceData.map(row =>
+                    <TableRow key={row}>
+                      <TableCell component="th" scope="row">
+                        {row.work_name}
+                      </TableCell>
+                      <TableCell align="right">{row.work}</TableCell>
+                    </TableRow>
+                  )
+                  }
+                </TableBody>
               </Table>
             </Box>
-
           </Grid>
-        */
       }
 
 
@@ -158,6 +165,7 @@ class Musician extends React.Component {
             </Grid>
           </Grid>
           {tableCompositions}
+          {tableInterpretations}
         </Container>
       )
     }

@@ -30,7 +30,8 @@ class Musician extends React.Component {
   }
 
   handleClick(rang){
-    console.log(rang)
+    const WorkId = (rang).slice(-36)
+    this.props.history.push('/work/'+WorkId)
   }
 
   render() {
@@ -41,8 +42,8 @@ class Musician extends React.Component {
       let tableCompositions = null
       let tableInterpretations = null
 
-      if (this.state.musicianData.composedWorks !== undefined) {
-        let compositionData = this.state.musicianData.composedWorks;
+      if (this.state.musicianData.composed_works !== undefined) {
+        let compositionData = this.state.musicianData.composed_works;
         tableCompositions =
           <Grid>
             <Box m={3}>
@@ -54,8 +55,8 @@ class Musician extends React.Component {
               <Table>
                 <TableHead>
                   <TableRow>
-                    <TableCell align='right'>Titre de l'oeuvre</TableCell>
-                    <TableCell align='right'>Lien d'accès</TableCell>
+                    <TableCell align='left'>Titre de l'oeuvre</TableCell>
+                    {/*<TableCell align='right'>Lien d'accès</TableCell>*/}
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -68,7 +69,7 @@ class Musician extends React.Component {
                       <TableCell component="th" scope="row">
                         {row.work_name}
                       </TableCell>
-                      <TableCell align="right">{row.work}</TableCell>
+                      {/*<TableCell align="right">{row.work}</TableCell>*/}
                     </TableRow>
                   )
                   }
@@ -78,8 +79,8 @@ class Musician extends React.Component {
           </Grid>
       }
 
-      if (this.state.musicianData.performedWorks !== undefined) {
-        let performanceData = this.state.musicianData.performedWorks;
+      if (this.state.musicianData.performed_works !== undefined) {
+        let performanceData = this.state.musicianData.performed_works;
         tableInterpretations =
           <Grid>
             <Box m={3}>
@@ -91,8 +92,11 @@ class Musician extends React.Component {
               <Table>
                 <TableHead>
                   <TableRow>
-                    <TableCell align='right'>Titre de l'oeuvre</TableCell>
-                    <TableCell align='right'>Lien accès à l'oeuvre</TableCell>
+                    <TableCell align='left'>Titre de l'oeuvre</TableCell>
+                    <TableCell align='left'>Radio de diffusion</TableCell>
+                    <TableCell align='left'>Date de l'interprétation</TableCell>
+                    <TableCell align='left'>Horaires du programme</TableCell>
+                    <TableCell align='left'>Compositeur de l'oeuvre</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -105,7 +109,10 @@ class Musician extends React.Component {
                       <TableCell component="th" scope="row">
                         {row.work_name}
                       </TableCell>
-                      <TableCell align="right">{row.work}</TableCell>
+                      <TableCell align="center">{row.radio_name}</TableCell>
+                      <TableCell align="center">{row.jour_debut_diffusion+ " " + row.start_date.slice(8,10) + " " + row.start_date.slice(5,7) + " " + row.start_date.slice(0,4)}</TableCell>
+                      <TableCell align="center">{row.start_date.slice(11,16) + " - " + row.end_date.slice(11,16)}</TableCell>
+                      <TableCell align="center">{row.composer_given_name + " " + row.composer_surname}</TableCell>
                     </TableRow>
                   )
                   }
@@ -114,21 +121,48 @@ class Musician extends React.Component {
             </Box>
           </Grid>
       }
-
+      
+      const dateNaissance = this.state.musicianData.birth_date
+      const dateMort = this.state.musicianData.death_date
+      let datesMusicien = ""
+      // if (dateNaissance !== undefined) {
+      //   datesMusicien.append(dateNaissance)
+      // } else{
+      //   datesMusicien.append("???? - ")
+      // }
+      // if (dateMort !== undefined) {
+      //   datesMusicien.append(dateMort)
+      // }
+      // else{
+      //   datesMusicien.append("????")
+      // }
+      // console.log(datesMusicien)
+      if (dateNaissance !== undefined) {
+        datesMusicien = dateNaissance + " - "
+      } else {
+        datesMusicien = "???? - "
+      }
+      if (dateMort !== undefined) {
+          datesMusicien = datesMusicien + dateMort
+        }
+        else{
+          datesMusicien = datesMusicien + "????"
+        }
+      console.log(datesMusicien)
 
       return (
         <Container>
           <Grid>
-            <Typography variant='h5' component='h2'>
+            {/*<Typography variant='h5' component='h2'>
               Affichage du musicien d'id <code>{this.props.match.params.id}</code>
-            </Typography>
+            </Typography>*/}
 
             <Box mx='auto'>
               <Typography variant='h6' component='h6'>
                 <Grid container direction='row' justify='space-evenly' alignItems='center'>
                   <Box p={2}>{this.state.musicianData.surname}</Box>
-                  <Box p={2}>{this.state.musicianData.givenName}</Box>
-                  <Box p={2}>({this.state.musicianData.birthDate} - {this.state.musicianData.deathDate})</Box>
+                  <Box p={2}>{this.state.musicianData.given_name}</Box>
+                  <Box p={2}>({datesMusicien})</Box>
                 </Grid>
               </Typography>
             </Box>

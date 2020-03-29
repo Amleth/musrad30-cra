@@ -34,8 +34,8 @@ class Composers extends React.Component {
               { title: 'Style', field: 'style_label' },
             ]}
             options={{
-              pageSize : 15,
-              pageSizeOptions : [5,10,15,20]
+              pageSize : 20,
+              pageSizeOptions : [10,20,50]
             }}
             data={this.state.composersData}
             onRowClick={((evt, selectedRow) => {

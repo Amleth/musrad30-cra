@@ -2,6 +2,7 @@ import React from 'react'
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
 import Musician from './components/musician'
 import Program from './components/program'
+import Work from './components/work'
 import Composers from './components/composers'
 import Performers from './components/performers'
 import Programs from './components/programs'
@@ -44,6 +45,7 @@ export default function App() {
           <Route path='/programs' children={Programs} />
           <Route path='/composed_works' children={CompWorks} />
           <Route path='/musician/:id' children={Musician} />
+          <Route path='/work/:id' children={Work} />
           <Route path='/program/:id' children={Program} />
         </Switch>
       </div>

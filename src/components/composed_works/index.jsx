@@ -2,7 +2,6 @@ import React from 'react'
 import MaterialTable from 'material-table'
 import { withRouter } from 'react-router'
 import axios from 'axios'
-import { Container, Box } from '@material-ui/core'
 
 class CompWorks extends React.Component {
   constructor(props) {
@@ -42,8 +41,11 @@ class CompWorks extends React.Component {
               pageSizeOptions: [10, 20, 50]
             }}
             data={this.state.worksData}
+            onRowClick={((evt, selectedRow) => {
+              const workId = selectedRow.work.slice(-36)
+              this.props.history.push('/work/'+workId)
+            })}
           >
-
           </MaterialTable>
         </div>
       )

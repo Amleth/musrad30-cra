@@ -5,11 +5,6 @@ import {
   Box,
   Grid,
   Container,
-  Table,
-  TableHead,
-  TableRow,
-  TableBody,
-  TableCell,
   Typography
 } from '@material-ui/core'
 import MaterialTable from 'material-table'

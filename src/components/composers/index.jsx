@@ -43,7 +43,6 @@ class Composers extends React.Component {
               this.props.history.push('/musician/'+composerId)
             })}
           >
-
           </MaterialTable>
         </div>
       )

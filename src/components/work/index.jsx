@@ -52,11 +52,19 @@ class Work extends React.Component {
           columns={[
             { title : "Radio", field : "super_event_station_label"},
             { title : "Jour", field : "super_event_jour_debut_diffusion"},
-            { title : "Horaire de début", field : "super_event_start_date", type : 'datetime'},
-            { title : "Horaire de fin", field : "super_event_end_date", type : 'datetime'},
+            { title : "Date", render: rowData => {
+              return (rowData.super_event_start_date.slice(8,10)+"-"+rowData.super_event_start_date.slice(5,7)+"-"+rowData.super_event_start_date.slice(0,4))
+            }},
+            { title : "Horaire de début", field : "super_event_start_date", type : 'datetime', render: rowData => {
+              return (rowData.super_event_start_date.slice(11,16))
+            }},
+            { title : "Horaire de fin", field : "super_event_end_date", type : 'datetime', render: rowData => {
+              return (rowData.super_event_end_date.slice(11,16))
+            }},
             { title : "Titre du programme", field : "super_event_title_label"},
             { title : "Type du programme", field : "super_event_type_label"},
             { title : "Format de diffusion", field : "super_event_format_label"},
+            { title : "Interprète", field : "performer"},
           ]}
           data={this.state.workData}
           onRowClick={((evt, selectedRow) => {

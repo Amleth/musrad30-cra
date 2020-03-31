@@ -29,7 +29,7 @@ class Work extends React.Component {
         data[sub_event][0].performer = performers
         newData.push(data[sub_event][0])
       }
-      console.log(newData)
+      ///console.log(newData)
       this.setState({ workData: newData })
     })
   }

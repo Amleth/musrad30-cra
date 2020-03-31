@@ -3,7 +3,7 @@ import MaterialTable from 'material-table'
 import { withRouter } from 'react-router'
 import axios from 'axios'
 
-class CompWorks extends React.Component {
+class IdentifiedWorks extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -26,16 +26,10 @@ class CompWorks extends React.Component {
       return (
         <div style={{ maxWidth: '100%' }}>
           <MaterialTable
-            title='Index des oeuvres composées'
+            title='Index des oeuvres identifiées'
             columns={[
               { title: 'Nom', field: 'work_name' },
-              { title: 'Compositeur', field : 'string', render: rowData => {
-                if (rowData.composer_given_name){
-                  return (rowData.composer_given_name + " " + rowData.composer_surname)
-                } else {
-                  return (rowData.composer_surname)
-                }
-              }
+              { title: 'Compositeur', field : 'string', render: rowData => { return (rowData.composer_surname? (rowData.composer_given_name? rowData.composer_given_name + " " + rowData.composer_surname : rowData.composer_surname) : "Compositeur anonyme") }
               },
             ]}
             options={{
@@ -56,4 +50,4 @@ class CompWorks extends React.Component {
   }
 }
 
-export default withRouter(CompWorks)
+export default withRouter(IdentifiedWorks)

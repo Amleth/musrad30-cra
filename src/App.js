@@ -6,7 +6,7 @@ import Work from './components/work'
 import Composers from './components/composers'
 import Performers from './components/performers'
 import Programs from './components/programs'
-import CompWorks from './components/composed_works'
+import IdentifiedWorks from './components/identified_works'
 
 export default function App() {
   return (
@@ -26,7 +26,7 @@ export default function App() {
             <Link to='/super_events'>Programmes</Link>
           </li>
           <li>
-            <Link to='/composed_works'>Oeuvres Composées</Link>
+            <Link to='/identified_works'>Oeuvres Identifiées</Link>
           </li>
         </ul>
         <hr />
@@ -43,7 +43,7 @@ export default function App() {
           <Route path='/composers' children={Composers} />
           <Route path='/performers' children={Performers} />
           <Route path='/super_events' children={Programs} />
-          <Route path='/composed_works' children={CompWorks} />
+          <Route path='/identified_works' children={IdentifiedWorks} />
           <Route path='/musician/:id' children={Musician} />
           <Route path='/work/:id' children={Work} />
           <Route path='/super_event/:id' children={Program} />

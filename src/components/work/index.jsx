@@ -8,6 +8,7 @@ import {
   Typography
 } from '@material-ui/core'
 import MaterialTable from 'material-table'
+import lodash from 'lodash'
 
 class Work extends React.Component {
   constructor(props) {
@@ -21,7 +22,15 @@ class Work extends React.Component {
     const id = this.props.match.params.id
 
     axios.get('http://data-iremus.huma-num.fr/musrad30/work/' + id).then(res => {
-      this.setState({ workData: res.data })
+      let newData = []
+      const data = lodash.groupBy(res.data, 'sub_event')
+      for (const sub_event in data) {
+        const performers = data[sub_event].map(item => item.performer_surname + "\n")
+        data[sub_event][0].performer = performers
+        newData.push(data[sub_event][0])
+      }
+      console.log(newData)
+      this.setState({ workData: newData })
     })
   }
 

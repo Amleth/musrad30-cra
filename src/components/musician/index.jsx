@@ -153,10 +153,6 @@ class Musician extends React.Component {
       return (
         <Container>
           <Grid>
-            {/*<Typography variant='h5' component='h2'>
-              Affichage du musicien d'id <code>{this.props.match.params.id}</code>
-            </Typography>*/}
-
             <Box mx='auto'>
               <Typography variant='h6' component='h6'>
                 <Grid container direction='row' justify='space-evenly' alignItems='center'>

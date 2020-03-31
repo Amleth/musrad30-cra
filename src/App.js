@@ -23,7 +23,7 @@ export default function App() {
             <Link to='/performers'>Interprètes</Link>
           </li>
           <li>
-            <Link to='/programs'>Programmes</Link>
+            <Link to='/super_events'>Programmes</Link>
           </li>
           <li>
             <Link to='/composed_works'>Oeuvres Composées</Link>
@@ -42,11 +42,11 @@ export default function App() {
           </Route>
           <Route path='/composers' children={Composers} />
           <Route path='/performers' children={Performers} />
-          <Route path='/programs' children={Programs} />
+          <Route path='/super_events' children={Programs} />
           <Route path='/composed_works' children={CompWorks} />
           <Route path='/musician/:id' children={Musician} />
           <Route path='/work/:id' children={Work} />
-          <Route path='/program/:id' children={Program} />
+          <Route path='/super_event/:id' children={Program} />
         </Switch>
       </div>
     </Router>

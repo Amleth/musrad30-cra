@@ -38,6 +38,8 @@ class Work extends React.Component {
     if (!this.state.workData) {
       return <div>Données en cours de téléchargement...</div>
     } else {
+      const wData = this.state.workData[0]
+      const compositeur = (wData.composer_surname ? (wData.composer_given_name ? wData.composer_given_name + " " + wData.composer_surname : wData.composer_surname) : "Compositeur anonyme")
       return (
         <Container>
           <Grid>
@@ -45,7 +47,7 @@ class Work extends React.Component {
               <Typography variant='h6' component='h6'>
                 <Grid container direction='row' justify='space-evenly' alignItems='center'>
                   <Box p={2}>{this.state.workData[0].work_name}</Box>
-                  <Box p={2}>{this.state.workData[0].composer_given_name + " " + this.state.workData[0].composer_surname}</Box>
+                  <Box p={2}>{compositeur}</Box>
                 </Grid>
               </Typography>
             </Box>

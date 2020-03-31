@@ -30,7 +30,7 @@ class Performers extends React.Component {
             columns={[
               { title: 'Nom', field: 'surname' },
               { title: 'Prenom', field: 'given_name' },
-              { title: 'Nationalté', field: 'nationality_label' },
+              { title: 'Nationalité', field: 'nationality_label' },
               { title: 'Style', field: 'style_label' },
             ]}
             options={{

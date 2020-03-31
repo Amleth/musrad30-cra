@@ -29,7 +29,7 @@ class Performers extends React.Component {
             title='Index des interprètes'
             columns={[
               { title: 'Nom', field: 'surname' },
-              { title: 'Prenom', field: 'givenName' },
+              { title: 'Prenom', field: 'given_name' },
               { title: 'Nationalté', field: 'nationality_label' },
               { title: 'Style', field: 'style_label' },
             ]}

@@ -14,7 +14,7 @@ class CompWorks extends React.Component {
   componentDidMount() {
     axios.get('http://data-iremus.huma-num.fr/musrad30/works/').then(res => {
       const identifiedWorks = res.data.filter(w => w.work_name || w.composer)
-      console.log(identifiedWorks.length)
+      // console.log(identifiedWorks.length)
       this.setState({ worksData: identifiedWorks })
     })
   }

@@ -12,6 +12,7 @@ import {
   TableCell,
   Typography
 } from '@material-ui/core'
+import MaterialTable from 'material-table'
 
 class Musician extends React.Component {
   constructor(props) {
@@ -25,13 +26,34 @@ class Musician extends React.Component {
     const id = this.props.match.params.id
 
     axios.get('http://data-iremus.huma-num.fr/musrad30/musician/' + id).then(res => {
+
+      if (res.data.composed_works) {
+        let newDataComp = {}
+        let tabDataComp = []
+        const tab = res.data.composed_works
+        for (let i = 0; i < tab.length; i++) {
+          if (!(tab[i].work in newDataComp)) {
+            newDataComp[tab[i].work] = tab[i].work_name
+          }
+        }
+        for (let key in newDataComp) {
+          let workObj = new Object
+          workObj.work = key
+          workObj.work_name = newDataComp[key]
+          tabDataComp.push(workObj)
+        }
+        console.log(tabDataComp)
+        res.data.composed_works = tabDataComp
+      }
+
       this.setState({ musicianData: res.data })
-    })
+    }
+    )
   }
 
-  handleClick(rang){
+  handleClick(rang) {
     const WorkId = (rang).slice(-36)
-    this.props.history.push('/work/'+WorkId)
+    this.props.history.push('/work/' + WorkId)
   }
 
   render() {
@@ -47,34 +69,19 @@ class Musician extends React.Component {
         tableCompositions =
           <Grid>
             <Box m={3}>
-              <Typography variant='h5' component='h3'>
-                Oeuvres Composées
-          </Typography>
-            </Box>
-            <Box>
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell align='left'>Titre de l'oeuvre</TableCell>
-                    {/*<TableCell align='right'>Lien d'accès</TableCell>*/}
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {compositionData.map(row =>
-                    <TableRow key={row}
-                    onClick={() => {
-                      this.handleClick(row.work)
-                    }
-                    }>
-                      <TableCell component="th" scope="row">
-                        {row.work_name}
-                      </TableCell>
-                      {/*<TableCell align="right">{row.work}</TableCell>*/}
-                    </TableRow>
-                  )
-                  }
-                </TableBody>
-              </Table>
+              <MaterialTable
+                title='Oeuvres Composées'
+                columns={[
+                  { title: "Titre de l'oeuvre", field: "work_name" }
+                ]}
+                data={this.state.musicianData.composed_works}
+                onRowClick={((evt, selectedRow) => {
+                  const workId = selectedRow.work.slice(-36)
+                  this.props.history.push('/work/' + workId)
+                })}
+              >
+
+              </MaterialTable>
             </Box>
           </Grid>
       }
@@ -84,71 +91,53 @@ class Musician extends React.Component {
         tableInterpretations =
           <Grid>
             <Box m={3}>
-              <Typography variant='h5' component='h3'>
-                Oeuvres Interpretées
-              </Typography>
-            </Box>
-            <Box>
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell align='left'>Titre de l'oeuvre</TableCell>
-                    <TableCell align='left'>Radio de diffusion</TableCell>
-                    <TableCell align='left'>Date de l'interprétation</TableCell>
-                    <TableCell align='left'>Horaires du programme</TableCell>
-                    <TableCell align='left'>Compositeur de l'oeuvre</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {performanceData.map(row =>
-                    <TableRow key={row} onClick={
-                      () => {
-                        this.handleClick(row.work)
-                      }
-                    } >
-                      <TableCell component="th" scope="row">
-                        {row.work_name}
-                      </TableCell>
-                      <TableCell align="center">{row.radio_name}</TableCell>
-                      <TableCell align="center">{row.jour_debut_diffusion+ " " + row.start_date.slice(8,10) + " " + row.start_date.slice(5,7) + " " + row.start_date.slice(0,4)}</TableCell>
-                      <TableCell align="center">{row.start_date.slice(11,16) + " - " + row.end_date.slice(11,16)}</TableCell>
-                      <TableCell align="center">{row.composer_given_name + " " + row.composer_surname}</TableCell>
-                    </TableRow>
-                  )
-                  }
-                </TableBody>
-              </Table>
+              <MaterialTable
+              title='Oeuvres Interprétées'
+              columns={[
+                {title : "Titre", render : row => {
+                  return(row.work_name ? row.work_name : 'Oeuvre anonyme')
+                }},
+                {title : "Radio de diffusion", field : "radio_name"},
+                {title : "Date d'interprétation", render : row => {
+                  let date = row.start_date.split('T')[0]
+                  date = date.split('-')
+                  return(date[2]+"-"+date[1]+"-"+ date[0])
+                }},
+                {title : "Plage horaire d'interprétation", render : row => {
+                  let HDeb = row.start_date.split('T')[1]
+                  HDeb = HDeb.split(':00+')[0]
+                  let HFin = row.end_date.split('T')[1]
+                  HFin = HFin.split(':00+')[0]
+                  return(HDeb+" - "+HFin)
+                }},
+                {title : "Compositeur de l'oeuvre", render : row => {
+                  return(row.composer_surname ? (row.composer_given_name ? row.composer_given_name + " " : "" ) + row.composer_surname : 'Compositeur anonyme')
+                }},
+              ]}
+              data={performanceData}
+              onRowClick={((evt, selectedRow) => {
+                const workId = selectedRow.work.slice(-36)
+                this.props.history.push('/work/'+workId)
+              })}>
+              </MaterialTable>
             </Box>
           </Grid>
       }
-      
+
       const dateNaissance = this.state.musicianData.birth_date
       const dateMort = this.state.musicianData.death_date
       let datesMusicien = ""
-      // if (dateNaissance !== undefined) {
-      //   datesMusicien.append(dateNaissance)
-      // } else{
-      //   datesMusicien.append("???? - ")
-      // }
-      // if (dateMort !== undefined) {
-      //   datesMusicien.append(dateMort)
-      // }
-      // else{
-      //   datesMusicien.append("????")
-      // }
-      // console.log(datesMusicien)
       if (dateNaissance !== undefined) {
         datesMusicien = dateNaissance + " - "
       } else {
         datesMusicien = "???? - "
       }
       if (dateMort !== undefined) {
-          datesMusicien = datesMusicien + dateMort
-        }
-        else{
-          datesMusicien = datesMusicien + "????"
-        }
-      console.log(datesMusicien)
+        datesMusicien = datesMusicien + dateMort
+      }
+      else {
+        datesMusicien = datesMusicien + "????"
+      }
 
       return (
         <Container>

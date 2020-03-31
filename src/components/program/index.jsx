@@ -1,33 +1,68 @@
 import React from 'react'
 import { withRouter } from 'react-router'
 import axios from 'axios'
+import {
+  Box,
+  Grid,
+  Container,
+  Table,
+  TableHead,
+  TableRow,
+  TableBody,
+  TableCell,
+  Typography
+} from '@material-ui/core'
 
 class Program extends React.Component {
   constructor(props) {
     super(props)
-    this.state = { data: null }
+    this.state = { programData: null }
   }
 
   componentDidMount() {
     const id = this.props.match.params.id
-    console.log(id)
-
-    // Exemple d'appel d'API REST bidon
-    axios.get('https://www.mocky.io/v2/5185415ba171ea3a00704eed').then(res => {
-      this.setState({ data: res.data })
-      console.log(this.state.data)
+    axios.get('http://data-iremus.huma-num.fr/musrad30/super_event/'+id).then(res => {
+      this.setState({ programData: res.data })
     })
   }
 
   render() {
-    if (!this.state.data) {
+    if (!this.state.programData) {
       return <div>Rien…</div>
     } else {
+      const pData = this.state.programData[0]
       return (
-        <div>
-          Affichage du programme d'id <code>{this.props.match.params.id}</code> (aller lire{' '}
-          <code>this.state.data</code>)…
-        </div>
+        <Container>
+          <Grid>
+            <Box mx='auto'>
+              <Typography variant='h6' component='h6'>
+                <Grid container direction='row' justify='space-evenly' alignItems='center'>
+                  <Box p={2}>{pData.title_label}</Box>
+                  <Box p={2}>{pData.jour_debut_diffusion + " " + pData.start_date.slice(8,10)+"-"+pData.start_date.slice(5,7)+"-"+pData.start_date.slice(0,4)}</Box>
+                  <Box p={2}>{pData.station_label}</Box>
+                </Grid>
+              </Typography>
+            </Box>
+          </Grid>
+
+          <Grid item xs={6}>
+              <Box mx='auto' direction='column'>
+                <Box>
+                  <Typography variant='button' component='h3' display="inline">
+                    Détails :{" "}
+                  </Typography>
+                  <Typography variant='subtitle1' component='h3' display="inline">
+                    A Implémenter
+                  </Typography>
+                </Box>
+              </Box>
+            </Grid>
+
+            <Grid>
+              
+            </Grid>
+
+        </Container>
       )
     }
   }

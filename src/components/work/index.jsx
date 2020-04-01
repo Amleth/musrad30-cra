@@ -25,11 +25,13 @@ class Work extends React.Component {
       let newData = []
       const data = lodash.groupBy(res.data, 'sub_event')
       for (const sub_event in data) {
-        const performers = data[sub_event].map(item => item.performer_surname + "\n")
+        const performers = data[sub_event].map(item =>
+          (item.performer_surname ? (item.performer_given_name ? item.performer_given_name + " " : "") + item.performer_surname : null)
+        )
         data[sub_event][0].performer = performers
         newData.push(data[sub_event][0])
       }
-      ///console.log(newData)
+      // console.log(newData)
       this.setState({ workData: newData })
     })
   }
@@ -70,7 +72,17 @@ class Work extends React.Component {
             { title : "Titre du programme", field : "super_event_title_label"},
             { title : "Type du programme", field : "super_event_type_label"},
             { title : "Format de diffusion", field : "super_event_format_label"},
-            { title : "Interprète", field : "performer"},
+            { title : "Interprète", render: r => {
+                  if (r.performer[0]) {
+                    console.log(r.performer.length)
+                    let chaine = ""
+                    for (let i = 0; i < (r.performer.length) - 1; i++) {
+                      chaine = chaine + r.performer[i] + ", "
+                    }
+                    chaine = chaine + r.performer[r.performer.length - 1]
+                    return (chaine)
+                  } else return ('Interprète anonyme')
+                }},
           ]}
           data={this.state.workData}
           onRowClick={((evt, selectedRow) => {

@@ -26,7 +26,7 @@ class Program extends React.Component {
     axios.get('http://data-iremus.huma-num.fr/musrad30/super_event/' + id).then(res => {
       let newData = []
       const data = lodash.groupBy(res.data, 'music_event')
-      console.log(data)
+      // console.log(data)
       for (const work in data) {
         const performers = data[work].map(item =>
           (item.performer_surname ? (item.performer_given_name ? item.performer_given_name + " " : "") + item.performer_surname : null)
@@ -88,8 +88,8 @@ class Program extends React.Component {
             <Box mx = 'auto'>
               <Grid container direction='row' justify='space-between' alignItems='center'>
               <Box m={2}> <Typography variant='h6' component='h6'>{pData.jour_debut_diffusion + " " + pData.start_date.slice(8, 10) + "-" + pData.start_date.slice(5, 7) + "-" + pData.start_date.slice(0, 4)}</Typography></Box>
-              <Box m={2}> <Typography variant='h6' component='body' display='inline'>Plage horaire :</Typography><Typography variant='subtitle1' component='h3' display="inline">{" " + plageHoraire}</Typography></Box>
-              <Box m={2}> <Typography variant='h6' component='body' display='inline'>Durée :</Typography><Typography variant='subtitle1' component='h3' display="inline">{" " + duree}</Typography></Box>
+              <Box m={2}> <Typography variant='h6' component='h3' display='inline'>Plage horaire :</Typography><Typography variant='subtitle1' component='h3' display="inline">{" " + plageHoraire}</Typography></Box>
+              <Box m={2}> <Typography variant='h6' component='h3' display='inline'>Durée :</Typography><Typography variant='subtitle1' component='h3' display="inline">{" " + duree}</Typography></Box>
               </Grid>
             </Box>
 
@@ -121,7 +121,7 @@ class Program extends React.Component {
                       chaine = chaine + r.performer[i] + ", "
                     }
                     chaine = chaine + r.performer[r.performer.length - 1]
-                    return chaine
+                    return (chaine)
                   } else return ('Interprète anonyme')
                 }
               },

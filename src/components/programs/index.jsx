@@ -36,13 +36,13 @@ class Programs extends React.Component {
                 let heurefin = rowData.end_date.split('T')[1]
                 return (heuredebut.split(':00+')[0] + ' - ' + heurefin.split(':00+')[0])
               }},
-              { title : "Durée", type : 'time', render: rowData => {
-                let duree = rowData.duration.split('T')[1]
-                let heures = duree.split('H')[0]
-                let minutes = duree.split('H')[1]
-                minutes = minutes.split('M')[0]
-                return (heures + 'h' + minutes +'min.')
-              }},
+              // { title : "Durée", type : 'time', render: rowData => {
+              //   let duree = rowData.duration.split('T')[1]
+              //   let heures = duree.split('H')[0]
+              //   let minutes = duree.split('H')[1]
+              //   minutes = minutes.split('M')[0]
+              //   return (heures + 'h' + minutes +'min.')
+              // }}, a mettre dans super_event/id !!
 
               { title: 'Type', field: 'type_label' },
               { title: 'Titre', field: 'title_label' },

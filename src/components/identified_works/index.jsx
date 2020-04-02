@@ -41,9 +41,6 @@ class IdentifiedWorks extends React.Component {
               const workId = selectedRow.work.slice(-36)
               this.props.history.push('/work/'+workId)
             })}
-            options={{
-              filtering: false
-            }}
           >
           </MaterialTable>
         </div>

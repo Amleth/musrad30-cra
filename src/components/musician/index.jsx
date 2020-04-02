@@ -5,11 +5,6 @@ import {
   Box,
   Grid,
   Container,
-  Table,
-  TableHead,
-  TableRow,
-  TableBody,
-  TableCell,
   Typography
 } from '@material-ui/core'
 import MaterialTable from 'material-table'
@@ -37,7 +32,7 @@ class Musician extends React.Component {
           }
         }
         for (let key in newDataComp) {
-          let workObj = new Object
+          let workObj = {}
           workObj.work = key
           workObj.work_name = newDataComp[key]
           tabDataComp.push(workObj)
@@ -65,7 +60,7 @@ class Musician extends React.Component {
       let tableInterpretations = null
 
       if (this.state.musicianData.composed_works !== undefined) {
-        let compositionData = this.state.musicianData.composed_works;
+        //let compositionData = this.state.musicianData.composed_works;
         tableCompositions =
           <Grid>
             <Box m={3}>

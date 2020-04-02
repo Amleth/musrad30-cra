@@ -28,10 +28,19 @@ class Work extends React.Component {
         const performers = data[sub_event].map(item =>
           (item.performer_surname ? (item.performer_given_name ? item.performer_given_name + " " : "") + item.performer_surname : null)
         )
-        data[sub_event][0].performer = performers
+        
+        console.log(data[sub_event])
+        // const composers = data[sub_event].map(item =>
+        //   //(item.composer_surname ? (item.composer_given_name ? item.composer_given_name + " " : "") + item.composer_surname : null)
+        //   //soucis avec le map qui fait un produit carthésien avec les champs proposés... à régler
+        //   item.composer_given_name + " " + item.composer_surname
+        // )
+        const distinctPerformers = [...new Set(performers)]
+        // const distinctComposers = [...new Set(composers)]
+        data[sub_event][0].performer = distinctPerformers
+        // data[sub_event][0].composer = distinctComposers
         newData.push(data[sub_event][0])
       }
-      // console.log(newData)
       this.setState({ workData: newData })
     })
   }
@@ -41,6 +50,10 @@ class Work extends React.Component {
       return <div>Données en cours de téléchargement...</div>
     } else {
       const wData = this.state.workData[0]
+      let heuredebut = wData.super_event_start_date.split('T')[1]
+      let heurefin = wData.super_event_end_date.split('T')[1]
+      let plageHoraire = heuredebut.split(':00+')[0] + ' - ' + heurefin.split(':00+')[0]
+      // console.log(wData)
       const compositeur = (wData.composer_surname ? (wData.composer_given_name ? wData.composer_given_name + " " + wData.composer_surname : wData.composer_surname) : "Compositeur anonyme")
       return (
         <Container>
@@ -54,7 +67,6 @@ class Work extends React.Component {
               </Typography>
             </Box>
           </Grid>
-
           <MaterialTable
           title="Diffusions de l'oeuvre"
           columns={[
@@ -63,18 +75,13 @@ class Work extends React.Component {
             { title : "Date", render: rowData => {
               return (rowData.super_event_start_date.slice(8,10)+"-"+rowData.super_event_start_date.slice(5,7)+"-"+rowData.super_event_start_date.slice(0,4))
             }},
-            { title : "Horaire de début", field : "super_event_start_date", type : 'datetime', render: rowData => {
-              return (rowData.super_event_start_date.slice(11,16))
-            }},
-            { title : "Horaire de fin", field : "super_event_end_date", type : 'datetime', render: rowData => {
-              return (rowData.super_event_end_date.slice(11,16))
-            }},
+            { title : "Plage Horaire", type : 'datetime', render: r => {return plageHoraire}},
             { title : "Titre du programme", field : "super_event_title_label"},
             { title : "Type du programme", field : "super_event_type_label"},
             { title : "Format de diffusion", field : "super_event_format_label"},
             { title : "Interprète", render: r => {
                   if (r.performer[0]) {
-                    console.log(r.performer.length)
+                    // console.log(r.performer.length)
                     let chaine = ""
                     for (let i = 0; i < (r.performer.length) - 1; i++) {
                       chaine = chaine + r.performer[i] + ", "
@@ -89,6 +96,9 @@ class Work extends React.Component {
             const progId = selectedRow.super_event.slice(-36)
             this.props.history.push('/super_event/'+progId)
           })}
+          options={{
+            filtering: true
+          }}
           >
 
           </MaterialTable>

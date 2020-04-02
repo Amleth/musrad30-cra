@@ -5,11 +5,6 @@ import {
   Box,
   Grid,
   Container,
-  Table,
-  TableHead,
-  TableRow,
-  TableBody,
-  TableCell,
   Typography
 } from '@material-ui/core'
 import MaterialTable from 'material-table'
@@ -31,7 +26,11 @@ class Program extends React.Component {
         const performers = data[work].map(item =>
           (item.performer_surname ? (item.performer_given_name ? item.performer_given_name + " " : "") + item.performer_surname : null)
         )
+        const composers = data[work].map(item =>
+          (item.composer_surname ? (item.composer_given_name ? item.composer_given_name + " " : "") + item.composer_surname : null)
+        )
         data[work][0].performer = performers
+        data[work][0].composer = composers
         newData.push(data[work][0])
       }
       this.setState({ programData: newData })
@@ -106,10 +105,21 @@ class Program extends React.Component {
               },
               {
                 title: "Compositeurs", render: r => {
-                  if (r.composer) {
-                    let name = (r.composer_given_name ? r.composer_given_name + " " : "") + r.composer_surname
-                    return (name)
+                  if (r.composer[0]) {
+                    console.log(r.composer.length)
+                    let chaine = ""
+                    for (let i = 0; i < (r.composer.length) - 1; i++) {
+                      chaine = chaine + r.composer[i] + ", "
+                    }
+                    chaine = chaine + r.composer[r.composer.length - 1]
+                    return (chaine)
                   } else return ('Compositeur anonyme')
+
+                  // if (r.composer) {
+                  //   console.log(r.performer.length)
+                  //   let name = (r.composer_given_name ? r.composer_given_name + " " : "") + r.composer_surname
+                  //   return (name)
+                  // } else return ('Compositeur anonyme')
                 }
               },
               {

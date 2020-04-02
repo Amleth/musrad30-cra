@@ -24,7 +24,7 @@ class Programs extends React.Component {
       return (
         <div style={{ maxWidth: '100%' }}>
           <MaterialTable
-            title='Index des programmes'
+            title='Liste des programmes'
             columns={[
               { title: 'Radio', field: 'station_label' },
               { title : "Date", render: rowData => {

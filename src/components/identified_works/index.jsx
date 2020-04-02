@@ -26,7 +26,7 @@ class IdentifiedWorks extends React.Component {
       return (
         <div style={{ maxWidth: '100%' }}>
           <MaterialTable
-            title='Index des oeuvres identifiées'
+            title='Liste des oeuvres identifiées'
             columns={[
               { title: 'Nom', field: 'work_name' },
               { title: 'Compositeur', field : 'string', render: rowData => { return (rowData.composer_surname? (rowData.composer_given_name? rowData.composer_given_name + " " + rowData.composer_surname : rowData.composer_surname) : "Compositeur anonyme") }

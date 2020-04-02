@@ -26,7 +26,7 @@ class Composers extends React.Component {
       return (
         <div style={{ maxWidth: '100%' }}>
           <MaterialTable
-            title='Index des compositeurs'
+            title='Liste des compositeurs'
             columns={[
               { title: 'Nom', field: 'surname' },
               { title: 'Prenom', field: 'given_name' },

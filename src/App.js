@@ -7,26 +7,42 @@ import Composers from './components/composers'
 import Performers from './components/performers'
 import Programs from './components/programs'
 import IdentifiedWorks from './components/identified_works'
-import { Typography, Box, Grid, Container, Button, IconButton } from '@material-ui/core'
-import {Home, NavigateBefore,NavigateNext } from '@material-ui/icons';
-
+import { Typography, Box, Grid, Container, Button, IconButton, AppBar, Toolbar } from '@material-ui/core'
+import { Home } from '@material-ui/icons';
 
 export default function App() {
   return (
     <Router>
+      <AppBar position="static">
+        <Toolbar>
+        <Grid container justify="space-between" direction='row' alignItems="center" >
+          <Grid item>
+          <Button edge="start" color="inherit" aria-label="home" component={Link} to="/" startIcon={<Home/>}>
+          Home
+          </Button>
+          </Grid>
+
+          <Grid item>
+            <Box width>
+              <Button color='inherit' component={Link} to="/composers" startIcon={<i class="fas fa-user"></i>}>Compositeurs</Button>
+
+  <Button color='inherit' component={Link} to="/performers" startIcon={<i class="far fa-user"></i>}>Interprètes</Button>
+
+              <Button color='inherit' component={Link} to="/identified_works" startIcon={<i class="fas fa-music"></i>}>Oeuvres Identifiées</Button>
+
+              <Button color='inherit' component={Link} to="/super_events" startIcon={<i class="fas fa-microphone-alt"></i>}>Programmes</Button>
+            </Box>
+          </Grid>
+
+          <Grid item>
+
+          </Grid>
+
+        </Grid>
+        </Toolbar>
+      </AppBar>
+
       <div>
-        <Box>
-        <IconButton color="primary" aria-label="upload picture" component="span">
-          <NavigateBefore />
-        </IconButton>
-        <IconButton color="primary" aria-label="Home" component={ Link } to="/">
-          <Home />
-        </IconButton>
-        <IconButton color="primary" aria-label="upload picture" component="span">
-          <NavigateNext/>
-        </IconButton>
-        </Box>
-        <hr />
         <Switch>
           <Route exact path='/'>
             <Container maxWidth="sm">
@@ -38,19 +54,19 @@ export default function App() {
               <Grid container justify="space-between" direction='column'>
                 <Grid container justify="space-between">
                   <Box width={1 / 2}>
-                    <Button size='large' variant='contained' color='primary' fullWidth='true' component={ Link } to="/composers">Compositeurs</Button>
+                    <Button size='large' variant='contained' color='primary' fullWidth={true} component={Link} to="/composers">Compositeurs</Button>
                   </Box>
                   <Box width={1 / 2}>
-                    <Button size='large' variant='contained' color='primary' fullWidth='true' component={ Link } to="/performers">Interprètes</Button>
+                    <Button size='large' variant='contained' color='primary' fullWidth={true} component={Link} to="/performers">Interprètes</Button>
                   </Box>
                 </Grid>
 
                 <Grid container justify="space-between">
                   <Box width={1 / 2}>
-                    <Button size='large' variant='contained' color='primary' fullWidth='true' component={ Link } to="/identified_works">Oeuvres Identifiées</Button>
+                    <Button size='large' variant='contained' color='primary' fullWidth={true} component={Link} to="/identified_works">Oeuvres Identifiées</Button>
                   </Box>
                   <Box width={1 / 2}>
-                    <Button size='large' variant='contained' color='primary' fullWidth='true' component={ Link } to="/super_events">Programmes</Button>
+                    <Button size='large' variant='contained' color='primary' fullWidth={true} component={Link} to="/super_events">Programmes</Button>
                   </Box>
                 </Grid>
               </Grid>
@@ -70,3 +86,22 @@ export default function App() {
     </Router>
   )
 }
+
+// class AffNav extends React.Component{
+//   render(){
+//     return(console.log('yo'))
+//   } 
+//   // if (this.history === "/"){
+//   //   return (<Box>
+//   //         <IconButton color="primary" aria-label="Home" component={Link} to="/">
+//   //           <Home />
+//   //         </IconButton>
+//   //       </Box>)
+//   // } else {
+//   //   return (<Box>
+//   //         <IconButton color="primary" aria-label="Home" component={Link} to="/">
+//   //           <Home />
+//   //         </IconButton>
+//   //       </Box>)
+//   // }
+// }

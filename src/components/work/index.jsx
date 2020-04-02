@@ -28,7 +28,7 @@ class Work extends React.Component {
         const performers = data[sub_event].map(item =>
           (item.performer_surname ? (item.performer_given_name ? item.performer_given_name + " " : "") + item.performer_surname : null)
         )
-        
+
         console.log(data[sub_event])
         // const composers = data[sub_event].map(item =>
         //   //(item.composer_surname ? (item.composer_given_name ? item.composer_given_name + " " : "") + item.composer_surname : null)
@@ -68,18 +68,21 @@ class Work extends React.Component {
             </Box>
           </Grid>
           <MaterialTable
-          title="Diffusions de l'oeuvre"
-          columns={[
-            { title : "Radio", field : "super_event_station_label"},
-            { title : "Jour", field : "super_event_jour_debut_diffusion"},
-            { title : "Date", render: rowData => {
-              return (rowData.super_event_start_date.slice(8,10)+"-"+rowData.super_event_start_date.slice(5,7)+"-"+rowData.super_event_start_date.slice(0,4))
-            }},
-            { title : "Plage Horaire", type : 'datetime', render: r => {return plageHoraire}},
-            { title : "Titre du programme", field : "super_event_title_label"},
-            { title : "Type du programme", field : "super_event_type_label"},
-            { title : "Format de diffusion", field : "super_event_format_label"},
-            { title : "Interprète", render: r => {
+            title="Diffusions de l'oeuvre"
+            columns={[
+              { title: "Radio", field: "super_event_station_label" },
+              { title: "Jour", field: "super_event_jour_debut_diffusion" },
+              {
+                title: "Date", render: rowData => {
+                  return (rowData.super_event_start_date.slice(8, 10) + "-" + rowData.super_event_start_date.slice(5, 7) + "-" + rowData.super_event_start_date.slice(0, 4))
+                }
+              },
+              { title: "Plage Horaire", type: 'datetime', render: r => { return plageHoraire } },
+              { title: "Titre du programme", field: "super_event_title_label" },
+              { title: "Type du programme", field: "super_event_type_label" },
+              { title: "Format de diffusion", field: "super_event_format_label" },
+              {
+                title: "Interprète", render: r => {
                   if (r.performer[0]) {
                     // console.log(r.performer.length)
                     let chaine = ""
@@ -89,16 +92,17 @@ class Work extends React.Component {
                     chaine = chaine + r.performer[r.performer.length - 1]
                     return (chaine)
                   } else return ('Interprète anonyme')
-                }},
-          ]}
-          data={this.state.workData}
-          onRowClick={((evt, selectedRow) => {
-            const progId = selectedRow.super_event.slice(-36)
-            this.props.history.push('/super_event/'+progId)
-          })}
-          options={{
-            filtering: true
-          }}
+                }
+              },
+            ]}
+            data={this.state.workData}
+            onRowClick={((evt, selectedRow) => {
+              const progId = selectedRow.super_event.slice(-36)
+              this.props.history.push('/super_event/' + progId)
+            })}
+            options={{
+              filtering: true
+            }}
           >
 
           </MaterialTable>

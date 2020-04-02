@@ -7,38 +7,56 @@ import Composers from './components/composers'
 import Performers from './components/performers'
 import Programs from './components/programs'
 import IdentifiedWorks from './components/identified_works'
+import { Typography, Box, Grid, Container, Button, IconButton } from '@material-ui/core'
+import {Home, NavigateBefore,NavigateNext } from '@material-ui/icons';
+
 
 export default function App() {
   return (
     <Router>
       <div>
-        <ul>
-          <li>
-            <Link to='/'>Home</Link>
-          </li>
-          <li>
-            <Link to='/composers'>Compositeurs</Link>
-          </li>
-          <li>
-            <Link to='/performers'>Interprètes</Link>
-          </li>
-          <li>
-            <Link to='/super_events'>Programmes</Link>
-          </li>
-          <li>
-            <Link to='/identified_works'>Oeuvres Identifiées</Link>
-          </li>
-        </ul>
+        <Box>
+        <IconButton color="primary" aria-label="upload picture" component="span">
+          <NavigateBefore />
+        </IconButton>
+        <IconButton color="primary" aria-label="Home" component={ Link } to="/">
+          <Home />
+        </IconButton>
+        <IconButton color="primary" aria-label="upload picture" component="span">
+          <NavigateNext/>
+        </IconButton>
+        </Box>
         <hr />
         <Switch>
           <Route exact path='/'>
-            <div>
-              Et si on allait voir le{' '}
-              <Link to='/musician/02a7add6-4982-42e2-936d-7231909d8d8d'>
-                musicien d'id <code>02a7add6-4982-42e2-936d-7231909d8d8d</code>
-              </Link>
-              &nbsp;?
-            </div>
+            <Container maxWidth="sm">
+              <Grid container justify="center">
+                <Typography variant="h1" component="h2">
+                  MusRad30
+              </Typography>
+              </Grid>
+              <Grid container justify="space-between" direction='column'>
+                <Grid container justify="space-between">
+                  <Box width={1 / 2}>
+                    <Button size='large' variant='contained' color='primary' fullWidth='true' component={ Link } to="/composers">Compositeurs</Button>
+                  </Box>
+                  <Box width={1 / 2}>
+                    <Button size='large' variant='contained' color='primary' fullWidth='true' component={ Link } to="/performers">Interprètes</Button>
+                  </Box>
+                </Grid>
+
+                <Grid container justify="space-between">
+                  <Box width={1 / 2}>
+                    <Button size='large' variant='contained' color='primary' fullWidth='true' component={ Link } to="/identified_works">Oeuvres Identifiées</Button>
+                  </Box>
+                  <Box width={1 / 2}>
+                    <Button size='large' variant='contained' color='primary' fullWidth='true' component={ Link } to="/super_events">Programmes</Button>
+                  </Box>
+                </Grid>
+              </Grid>
+
+            </Container>
+
           </Route>
           <Route path='/composers' children={Composers} />
           <Route path='/performers' children={Performers} />

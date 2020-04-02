@@ -86,22 +86,3 @@ export default function App() {
     </Router>
   )
 }
-
-// class AffNav extends React.Component{
-//   render(){
-//     return(console.log('yo'))
-//   } 
-//   // if (this.history === "/"){
-//   //   return (<Box>
-//   //         <IconButton color="primary" aria-label="Home" component={Link} to="/">
-//   //           <Home />
-//   //         </IconButton>
-//   //       </Box>)
-//   // } else {
-//   //   return (<Box>
-//   //         <IconButton color="primary" aria-label="Home" component={Link} to="/">
-//   //           <Home />
-//   //         </IconButton>
-//   //       </Box>)
-//   // }
-// }

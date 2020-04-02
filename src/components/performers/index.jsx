@@ -35,7 +35,9 @@ class Performers extends React.Component {
             ]}
             options={{
               pageSize : 20,
-              pageSizeOptions : [10,20,50]
+              pageSizeOptions : [10,20,50],
+              filtering : true,
+              sorting : true
             }}
             data={this.state.performersData}
             onRowClick={((evt, selectedRow) => {

@@ -7,7 +7,7 @@ import Composers from './components/composers'
 import Performers from './components/performers'
 import Programs from './components/programs'
 import IdentifiedWorks from './components/identified_works'
-import { Typography, Box, Grid, Container, Button, IconButton, AppBar, Toolbar } from '@material-ui/core'
+import { Typography, Box, Grid, Container, Button, AppBar, Toolbar } from '@material-ui/core'
 import { Home } from '@material-ui/icons';
 
 export default function App() {
@@ -23,14 +23,14 @@ export default function App() {
           </Grid>
 
           <Grid item>
-            <Box width>
-              <Button color='inherit' component={Link} to="/composers" startIcon={<i class="fas fa-user"></i>}>Compositeurs</Button>
+            <Box>
+              <Button color='inherit' component={Link} to="/composers" startIcon={<i className="fas fa-user"></i>}>Compositeurs</Button>
 
-  <Button color='inherit' component={Link} to="/performers" startIcon={<i class="far fa-user"></i>}>Interprètes</Button>
+  <Button color='inherit' component={Link} to="/performers" startIcon={<i className="far fa-user"></i>}>Interprètes</Button>
 
-              <Button color='inherit' component={Link} to="/identified_works" startIcon={<i class="fas fa-music"></i>}>Oeuvres Identifiées</Button>
+              <Button color='inherit' component={Link} to="/identified_works" startIcon={<i className="fas fa-music"></i>}>Oeuvres Identifiées</Button>
 
-              <Button color='inherit' component={Link} to="/super_events" startIcon={<i class="fas fa-microphone-alt"></i>}>Programmes</Button>
+              <Button color='inherit' component={Link} to="/super_events" startIcon={<i className="fas fa-microphone-alt"></i>}>Programmes</Button>
             </Box>
           </Grid>
 

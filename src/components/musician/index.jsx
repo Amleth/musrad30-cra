@@ -87,33 +87,41 @@ class Musician extends React.Component {
           <Grid>
             <Box m={3}>
               <MaterialTable
-              title='Oeuvres Interprétées'
-              columns={[
-                {title : "Titre", render : row => {
-                  return(row.work_name ? row.work_name : 'Oeuvre anonyme')
-                }},
-                {title : "Radio de diffusion", field : "radio_name"},
-                {title : "Date d'interprétation", render : row => {
-                  let date = row.start_date.split('T')[0]
-                  date = date.split('-')
-                  return(date[2]+"-"+date[1]+"-"+ date[0])
-                }},
-                {title : "Plage horaire d'interprétation", render : row => {
-                  let HDeb = row.start_date.split('T')[1]
-                  HDeb = HDeb.split(':00+')[0]
-                  let HFin = row.end_date.split('T')[1]
-                  HFin = HFin.split(':00+')[0]
-                  return(HDeb+" - "+HFin)
-                }},
-                {title : "Compositeur de l'oeuvre", render : row => {
-                  return(row.composer_surname ? (row.composer_given_name ? row.composer_given_name + " " : "" ) + row.composer_surname : 'Compositeur anonyme')
-                }},
-              ]}
-              data={performanceData}
-              onRowClick={((evt, selectedRow) => {
-                const workId = selectedRow.work.slice(-36)
-                this.props.history.push('/work/'+workId)
-              })}>
+                title='Oeuvres Interprétées'
+                columns={[
+                  {
+                    title: "Titre", render: row => {
+                      return (row.work_name ? row.work_name : 'Oeuvre anonyme')
+                    }
+                  },
+                  { title: "Radio de diffusion", field: "radio_name" },
+                  {
+                    title: "Date d'interprétation", render: row => {
+                      let date = row.start_date.split('T')[0]
+                      date = date.split('-')
+                      return (date[2] + "-" + date[1] + "-" + date[0])
+                    }
+                  },
+                  {
+                    title: "Plage horaire d'interprétation", render: row => {
+                      let HDeb = row.start_date.split('T')[1]
+                      HDeb = HDeb.split(':00+')[0]
+                      let HFin = row.end_date.split('T')[1]
+                      HFin = HFin.split(':00+')[0]
+                      return (HDeb + " - " + HFin)
+                    }
+                  },
+                  {
+                    title: "Compositeur de l'oeuvre", render: row => {
+                      return (row.composer_surname ? (row.composer_given_name ? row.composer_given_name + " " : "") + row.composer_surname : 'Compositeur anonyme')
+                    }
+                  },
+                ]}
+                data={performanceData}
+                onRowClick={((evt, selectedRow) => {
+                  const workId = selectedRow.work.slice(-36)
+                  this.props.history.push('/work/' + workId)
+                })}>
               </MaterialTable>
             </Box>
           </Grid>
@@ -136,58 +144,42 @@ class Musician extends React.Component {
 
       return (
         <Container>
-          <Grid>
-            <Box mx='auto'>
-              <Typography variant='h6' component='h6'>
-                <Grid container direction='row' justify='space-evenly' alignItems='center'>
-                  <Box p={2}>{this.state.musicianData.surname}</Box>
-                  <Box p={2}>{this.state.musicianData.given_name}</Box>
-                  <Box p={2}>({datesMusicien})</Box>
-                </Grid>
+          <Grid container direction='row' justify='flex-start' alignItems='center'>
+            <Grid item>
+              <Typography variant='h6' component='h2'>
+                <Box p={2}>Nom :</Box>
+                <Box p={2}>Prénom :</Box>
+                <Box p={2}>Années d'existence :</Box>
               </Typography>
-            </Box>
+            </Grid>
+
+            <Grid item>
+              <Typography variant='body1' component='body' >
+                <Box p={2}>{this.state.musicianData.surname}</Box>
+                <Box p={2}>{this.state.musicianData.given_name}</Box>
+                <Box p={2}>{datesMusicien}</Box>
+              </Typography>
+            </Grid>
           </Grid>
 
-          <Grid container spacing={3}>
-            <Grid item xs={6}>
-              <Box mx='auto' direction='column'>
-                <Box>
-                  <Typography variant='button' component='h3' display="inline">
-                    statut :{" "}
-                  </Typography>
-                  <Typography variant='subtitle1' component='h3' display="inline">
-                    {this.state.musicianData.status_label}
-                  </Typography>
-
-                </Box>
-                <Box>
-                  <Typography gutterBottom variant='button' component='h3' display="inline">
-                    nationalite :{" "}
-                  </Typography>
-                  <Typography variant='subtitle1' component='h3' display="inline">
-                    {this.state.musicianData.nationality_label}
-                  </Typography>
-
-                </Box>
-                <Box>
-                  <Typography variant='button' component='h3' display="inline">
-                    style :{" "}
-                  </Typography>
-                  <Typography variant='subtitle1' component='h3' display="inline">
-                    {this.state.musicianData.style_label}
-                  </Typography>
-                </Box>
-              </Box>
-            </Grid>
-            <Grid item xs={6}>
-              <Box>
-                <Typography gutterBottom variant='button' component='h3'>
-                  Infos :
+          <Grid container direction='column' justify='flex-start' alignItems='center'>
+            <Grid container direction='row'>
+              <Grid item >
+                <Typography variant='button' component='h3'>
+                  <Box p={2}>Statut :</Box>
+                  <Box p={2}>Nationalite :</Box>
+                  <Box p={2}>Style :</Box>
+                  <Box p={2}>Infos :</Box>
                 </Typography>
-                <Typography variant='subtitle1' component='h3'>
-                  {this.state.musicianData.description}
+              </Grid>
+              <Grid item>
+                <Typography variant='body1' component='body' >
+                  <Box p={2}>{this.state.musicianData.status_label}</Box>
+                  <Box p={2}>{this.state.musicianData.nationality_label}</Box>
+                  <Box p={2}>{this.state.musicianData.style_label}</Box>
+                  <Box p={2}>{this.state.musicianData.description}</Box>
                 </Typography>
-              </Box>
+              </Grid>
             </Grid>
           </Grid>
           {tableCompositions}

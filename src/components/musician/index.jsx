@@ -146,7 +146,7 @@ class Musician extends React.Component {
         <Container>
           <Grid container direction='row' justify='flex-start' alignItems='center'>
             <Grid item>
-              <Typography variant='h6' component='h2'>
+              <Typography variant='button' component='h2'>
                 <Box p={2}>Nom :</Box>
                 <Box p={2}>Prénom :</Box>
                 <Box p={2}>Années d'existence :</Box>
@@ -165,7 +165,7 @@ class Musician extends React.Component {
           <Grid container direction='column' justify='flex-start' alignItems='center'>
             <Grid container direction='row'>
               <Grid item >
-                <Typography variant='button' component='h3'>
+                <Typography variant='button' component='h2'>
                   <Box p={2}>Statut :</Box>
                   <Box p={2}>Nationalite :</Box>
                   <Box p={2}>Style :</Box>

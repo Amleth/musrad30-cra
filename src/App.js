@@ -15,41 +15,42 @@ export default function App() {
     <Router>
       <AppBar position="static">
         <Toolbar>
-        <Grid container justify="space-between" direction='row' alignItems="center" >
-          <Grid item>
-          <Button edge="start" color="inherit" aria-label="home" component={Link} to="/" startIcon={<Home/>}>
-          Home
+          <Grid container justify="space-between" direction='row' alignItems="center" >
+            <Grid item>
+              <Button edge="start" color="inherit" aria-label="home" component={Link} to="/" startIcon={<Home />}>
+                Home
           </Button>
+            </Grid>
+
+            <Grid item>
+              <Box>
+                <Button color='inherit' component={Link} to="/composers" startIcon={<i className="fas fa-user"></i>}>Compositeurs</Button>
+
+                <Button color='inherit' component={Link} to="/performers" startIcon={<i className="far fa-user"></i>}>Interprètes</Button>
+
+                <Button color='inherit' component={Link} to="/identified_works" startIcon={<i className="fas fa-music"></i>}>Oeuvres Identifiées</Button>
+
+                <Button color='inherit' component={Link} to="/super_events" startIcon={<i className="fas fa-microphone-alt"></i>}>Programmes</Button>
+              </Box>
+            </Grid>
+
+            <Grid item>
+
+            </Grid>
+
           </Grid>
-
-          <Grid item>
-            <Box>
-              <Button color='inherit' component={Link} to="/composers" startIcon={<i className="fas fa-user"></i>}>Compositeurs</Button>
-
-  <Button color='inherit' component={Link} to="/performers" startIcon={<i className="far fa-user"></i>}>Interprètes</Button>
-
-              <Button color='inherit' component={Link} to="/identified_works" startIcon={<i className="fas fa-music"></i>}>Oeuvres Identifiées</Button>
-
-              <Button color='inherit' component={Link} to="/super_events" startIcon={<i className="fas fa-microphone-alt"></i>}>Programmes</Button>
-            </Box>
-          </Grid>
-
-          <Grid item>
-
-          </Grid>
-
-        </Grid>
         </Toolbar>
       </AppBar>
 
       <div>
         <Switch>
           <Route exact path='/'>
-            <Container maxWidth="sm">
+            <Container maxWidth="md">
               <Grid container justify="center">
-                <Typography variant="h1" component="h2">
-                  MusRad30
+                <Typography variant="h2" component="h1" align="center">
+                  Musiciens Radiodiffusés
               </Typography>
+                <Typography variant="h2" component="h1" align="center">dans les années 1930</Typography>
               </Grid>
               <Grid container justify="space-between" direction='column'>
                 <Grid container justify="space-between">

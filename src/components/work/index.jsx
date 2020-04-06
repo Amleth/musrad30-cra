@@ -65,16 +65,24 @@ class Work extends React.Component {
     
     return (
       <Container>
-        <Grid>
-          <Box mx='auto'>
-            <Typography variant='h6' component='h6'>
-              <Grid container direction='row' justify='space-evenly' alignItems='center'>
-                <Box p={2}>{this.state.workData[0].work_name}</Box>
+
+<Typography component='h1' variant='h3'>Page de l'oeuvre</Typography>
+          <Grid container direction='row' justify='flex-start' alignItems='center'>
+            <Grid item>
+              <Typography variant='button' component='h2'>
+                <Box p={2}>Titre :</Box>
+                <Box p={2}>Compositeur(s) :</Box>
+              </Typography>
+            </Grid>
+
+            <Grid item>
+              <Typography variant='body1' component='body' >
+              <Box p={2}>{this.state.workData[0].work_name}</Box>
                 <Box p={2}>{compositeurs}</Box>
-              </Grid>
-            </Typography>
-          </Box>
-        </Grid>
+              </Typography>
+            </Grid>
+          </Grid>
+
         <MaterialTable
           title="Diffusions de l'oeuvre"
           columns={[

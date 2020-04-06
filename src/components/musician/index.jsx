@@ -144,12 +144,17 @@ class Musician extends React.Component {
 
       return (
         <Container>
+          <Typography component='h1' variant='h3'>Page du musicien</Typography>
           <Grid container direction='row' justify='flex-start' alignItems='center'>
             <Grid item>
               <Typography variant='button' component='h2'>
                 <Box p={2}>Nom :</Box>
                 <Box p={2}>Prénom :</Box>
                 <Box p={2}>Années d'existence :</Box>
+                <Box p={2}>Statut :</Box>
+                  <Box p={2}>Nationalite :</Box>
+                  <Box p={2}>Style :</Box>
+                  <Box p={2}>Infos :</Box>
               </Typography>
             </Grid>
 
@@ -158,30 +163,14 @@ class Musician extends React.Component {
                 <Box p={2}>{this.state.musicianData.surname}</Box>
                 <Box p={2}>{this.state.musicianData.given_name}</Box>
                 <Box p={2}>{datesMusicien}</Box>
+                <Box p={2}>{this.state.musicianData.status_label}</Box>
+                <Box p={2}>{this.state.musicianData.nationality_label}</Box>
+                <Box p={2}>{this.state.musicianData.style_label}</Box>
+                <Box p={2}>{this.state.musicianData.description}</Box>
               </Typography>
             </Grid>
           </Grid>
 
-          <Grid container direction='column' justify='flex-start' alignItems='center'>
-            <Grid container direction='row'>
-              <Grid item >
-                <Typography variant='button' component='h2'>
-                  <Box p={2}>Statut :</Box>
-                  <Box p={2}>Nationalite :</Box>
-                  <Box p={2}>Style :</Box>
-                  <Box p={2}>Infos :</Box>
-                </Typography>
-              </Grid>
-              <Grid item>
-                <Typography variant='body1' component='body' >
-                  <Box p={2}>{this.state.musicianData.status_label}</Box>
-                  <Box p={2}>{this.state.musicianData.nationality_label}</Box>
-                  <Box p={2}>{this.state.musicianData.style_label}</Box>
-                  <Box p={2}>{this.state.musicianData.description}</Box>
-                </Typography>
-              </Grid>
-            </Grid>
-          </Grid>
           {tableCompositions}
           {tableInterpretations}
         </Container>

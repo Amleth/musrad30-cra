@@ -53,46 +53,40 @@ class Program extends React.Component {
       const heures = duree.split('H')[0]
       let minutes = duree.split('H')[1]
       minutes = minutes.split('M')[0]
-      duree = heures + 'h' + minutes +'min.'
+      duree = heures + 'h' + minutes + 'min.'
 
       return (
         <Container>
-          <Grid>
-            <Box mx='auto'>
-              <Typography variant='h5' component='h6'>
-                <Grid container direction='row' justify='space-between' alignItems='center'>
-                  <Box p={2}>{pData.title_label}</Box>
-                  <Box p={2}>{pData.station_label}</Box>
-                </Grid>
+          <Typography component='h1' variant='h3'>Page du programme</Typography>
+          <Grid container direction='row' justify='flex-start' alignItems='center'>
+            <Grid item>
+              <Typography variant='button' component='h2'>
+                <Box p={2}>Titre :</Box>
+                <Box p={2}>Station de diffusion :</Box>
+                
+                <Box p={2}>Date de diffusion :</Box>
+                <Box p={2}>Plage Horaire :</Box>
+                <Box p={2}>Durée :</Box>
               </Typography>
-            </Box>
+            </Grid>
+
+            <Grid item>
+              <Typography variant='body1' component='body' >
+                <Box p={2}>{pData.title_label}</Box>
+                <Box p={2}>{pData.station_label}</Box>
+                
+                <Box p={2}>{pData.jour_debut_diffusion + " " + pData.start_date.slice(8, 10) + "-" + pData.start_date.slice(5, 7) + "-" + pData.start_date.slice(0, 4)}</Box>
+                <Box p={2}>{plageHoraire}</Box>
+                <Box p={2}>{duree}</Box>
+              </Typography>
+            </Grid>
           </Grid>
 
           <Grid>
-            <Box direction='column' alignItems='center'>
-              <Box>
-                <Typography variant='h6' component='h6' display="inline">
-                  Description :{" "}
-                </Typography>
-              </Box>
-              <Box>
-                <Typography variant='subtitle1' component='h3' display="inline">
-                  {description}
-                </Typography>
-              </Box>
-            </Box>
+          <Typography variant='button' component='h2'><Box p={2}>Description :</Box></Typography>
+          <Typography variant='body1' component='body' ><Box p={2}>{pData.description.split('@')[0]}</Box></Typography>
           </Grid>
 
-          <Grid item xs={7}>
-            <Box mx = 'auto'>
-              <Grid container direction='row' justify='space-between' alignItems='center'>
-              <Box m={2}> <Typography variant='h6' component='h6'>{pData.jour_debut_diffusion + " " + pData.start_date.slice(8, 10) + "-" + pData.start_date.slice(5, 7) + "-" + pData.start_date.slice(0, 4)}</Typography></Box>
-              <Box m={2}> <Typography variant='h6' component='h3' display='inline'>Plage horaire :</Typography><Typography variant='subtitle1' component='h3' display="inline">{" " + plageHoraire}</Typography></Box>
-              <Box m={2}> <Typography variant='h6' component='h3' display='inline'>Durée :</Typography><Typography variant='subtitle1' component='h3' display="inline">{" " + duree}</Typography></Box>
-              </Grid>
-            </Box>
-
-          </Grid>
           <MaterialTable
             title="Plages diffusées"
             columns={[

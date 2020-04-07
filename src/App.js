@@ -41,7 +41,7 @@ export default function App() {
           </Grid>
         </Toolbar>
       </AppBar>
-
+      <Box m={2} />
       <div>
         <Switch>
           <Route exact path='/'>
@@ -52,6 +52,7 @@ export default function App() {
               </Typography>
                 <Typography variant="h2" component="h1" align="center">dans les années 1930</Typography>
               </Grid>
+              <Box m={5} />
               <Grid container justify="space-between" direction='column'>
                 <Grid container justify="space-between">
                   <Box width={1 / 2}>
@@ -70,6 +71,18 @@ export default function App() {
                     <Button size='large' variant='contained' color='primary' fullWidth={true} component={Link} to="/super_events">Programmes</Button>
                   </Box>
                 </Grid>
+              </Grid>
+              <Box m={5} />
+              <Grid>
+                <Typography variant="h6" component="h2" color='textPrimary'>A propos :</Typography>
+                <Typography variant="body1" component="body" color='textSecondary'>
+                Cette base de données a été créée à partir d’un échantillonnage de 3000 heures de programmes musicaux sur des radios françaises des années trente. Le relevé des quelque 20 000 références d’œuvres génère deux groupes de musiciens : plus de 2000 compositeurs et presque autant d’interprètes (individuels ou collectifs). {<br/>} La base de données permet d’exploiter ces inventaires de manières qualitative et quantitative. Elle permet aussi une forte interaction entre les musiciens et les programmes cités, mais aussi des tris par nationalité, par époque, par genre musical, ou bien encore par type de programme.
+                </Typography>
+                <Box m={1} />
+                <Typography variant="h6" component="h2" color='textPrimary'>Crédits :</Typography>
+                <Typography variant="body1" component="body" color='textSecondary'>
+                Lorem Ipsum
+                </Typography>
               </Grid>
 
             </Container>

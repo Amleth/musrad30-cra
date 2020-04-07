@@ -84,7 +84,7 @@ class Program extends React.Component {
 
           <Grid>
           <Typography variant='button' component='h2'><Box p={2}>Description :</Box></Typography>
-          <Typography variant='body1' component='body' ><Box p={2}>{pData.description.split('@')[0]}</Box></Typography>
+          <Typography variant='body1' component='body' ><Box p={2}>{description}</Box></Typography>
           </Grid>
 
           <MaterialTable

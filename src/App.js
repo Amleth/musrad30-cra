@@ -81,7 +81,10 @@ export default function App() {
                 <Box m={1} />
                 <Typography variant="h6" component="h2" color='textPrimary'>Crédits :</Typography>
                 <Typography variant="body1" component="body" color='textSecondary'>
-                Lorem Ipsum
+                  Responsable scientifique : Christophe BENNET<br/>
+                  Prétraitement des données : Florence LE PRIOL<br/>
+                  Modélisation sémantique et développement de l'API : Thomas BOTTINI<br/>
+                  Traitement des données, conception et développement de l'interface : Pierre LA ROCCA<br/>
                 </Typography>
               </Grid>
 

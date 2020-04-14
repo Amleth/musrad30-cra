@@ -12,7 +12,7 @@ class Programs extends React.Component {
   }
 
   componentDidMount() {
-    axios.get('http://data-iremus.huma-num.fr/musrad30/super_events').then(res => {
+    axios.get('http://data-iremus.huma-num.fr/api/musrad30/super_events').then(res => {
       this.setState({ programsData: res.data })
     })
   }

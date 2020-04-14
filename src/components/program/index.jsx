@@ -18,7 +18,7 @@ class Program extends React.Component {
 
   componentDidMount() {
     const id = this.props.match.params.id
-    axios.get('http://data-iremus.huma-num.fr/musrad30/super_event/' + id).then(res => {
+    axios.get('http://data-iremus.huma-num.fr/api/musrad30/super_event/' + id).then(res => {
       let newData = []
       const data = lodash.groupBy(res.data, 'music_event')
       // console.log(data)

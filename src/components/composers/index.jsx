@@ -14,7 +14,7 @@ class Composers extends React.Component {
   }
 
   componentDidMount() {
-    axios.get('http://data-iremus.huma-num.fr/musrad30/composers/').then(res => {
+    axios.get('http://data-iremus.huma-num.fr/api/musrad30/composers/').then(res => {
       this.setState({ composersData: res.data })
     })
   }

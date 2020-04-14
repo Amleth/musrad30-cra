@@ -14,7 +14,7 @@ class Performers extends React.Component {
   }
 
   componentDidMount() {
-    axios.get('http://data-iremus.huma-num.fr/musrad30/performers/').then(res => {
+    axios.get('http://data-iremus.huma-num.fr/api/musrad30/performers/').then(res => {
       this.setState({ performersData: res.data })
     })
   }

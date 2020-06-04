@@ -14,7 +14,7 @@
     "axios": "^0.19.2",
     "clsx": "latest",
     "lodash": "^4.17.15",
-    "material-table": "^1.57.2",
+    "material-table": "^1.59.0",
     "react": "latest",
     "react-dom": "latest",
     "react-router-dom": "^5.2.0",

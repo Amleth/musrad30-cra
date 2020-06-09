@@ -60,9 +60,9 @@ function Work({ history, match }) {
               render: (rowData) => {
                 return (
                   rowData.super_event_start_date.slice(8, 10) +
-                  '-' +
+                  '/' +
                   rowData.super_event_start_date.slice(5, 7) +
-                  '-' +
+                  '/' +
                   rowData.super_event_start_date.slice(0, 4)
                 )
               }
@@ -119,13 +119,10 @@ function computeData(res) {
         : null
     )
 
-    const composers = data[sub_event].map(
-      (item) =>
-        item.composer_surname
-          ? (item.composer_given_name ? item.composer_given_name + ' ' : '') + item.composer_surname
-          : null
-      //TODO soucis avec le map qui fait un produit carthésien avec les champs proposés... à régler
-      // item.composer_given_name + " " + item.composer_surname
+    const composers = data[sub_event].map((item) =>
+      item.composer_surname
+        ? (item.composer_given_name ? item.composer_given_name + ' ' : '') + item.composer_surname
+        : null
     )
     const distinctPerformers = [...new Set(performers)]
     const distinctComposers = [...new Set(composers)]

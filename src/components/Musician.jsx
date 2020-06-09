@@ -1,182 +1,241 @@
-import React from 'react'
-import { withRouter } from 'react-router'
-import axios from 'axios'
 import {
   Box,
-  Grid,
+  CircularProgress,
   Container,
+  Link,
+  Paper,
+  TextField,
   Typography
 } from '@material-ui/core'
+import { makeStyles } from '@material-ui/core/styles'
 import MaterialTable from 'material-table'
+import React, { useEffect, useState } from 'react'
+import { withRouter } from 'react-router'
+import { capitalize } from '../common'
 
-class Musician extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      musicianData: null,
-    }
-  }
+function Musician({ history, match }) {
+  const classes = useStyles()
+  const id = match.params.id
 
-  componentDidMount() {
-    const id = this.props.match.params.id
+  const [musicianData, setMusicianData] = useState([])
+  const [composedWorks, setComposedWorks] = useState([])
+  const [performedWorks, setPerformedWorks] = useState([])
 
-    axios.get('http://data-iremus.huma-num.fr/api/musrad30/musician/' + id).then(res => {
-
-      if (res.data.composed_works) {
-        let newDataComp = {}
-        let tabDataComp = []
-        const tab = res.data.composed_works
-        for (let i = 0; i < tab.length; i++) {
-          if (!(tab[i].work in newDataComp)) {
-            newDataComp[tab[i].work] = tab[i].work_name
-          }
+  useEffect(() => {
+    async function fetchData() {
+      const res = await fetch('http://data-iremus.huma-num.fr/api/musrad30/musician/' + id)
+      res.json().then((res) => {
+        setMusicianData(res)
+        if (res.hasOwnProperty('composed_works')) {
+          setComposedWorks(computeComposedWorks(res.composed_works))
         }
-        for (let key in newDataComp) {
-          let workObj = {}
-          workObj.work = key
-          workObj.work_name = newDataComp[key]
-          tabDataComp.push(workObj)
+        if (res.hasOwnProperty('performed_works')) {
+          setPerformedWorks(res.performed_works)
         }
-        console.log(tabDataComp)
-        res.data.composed_works = tabDataComp
-      }
-
-      this.setState({ musicianData: res.data })
+      })
     }
+    fetchData()
+  }, [id])
+
+  if (Object.entries(musicianData).length === 0) {
+    return (
+      <Container maxWidth='md'>
+        <CircularProgress />
+      </Container>
+    )
+  } else {
+    // DATES
+    const dateNaissance = musicianData.birth_date
+    const dateMort = musicianData.death_date
+    let datesMusicien = ''
+    if (dateNaissance !== undefined) {
+      datesMusicien = dateNaissance + ' — '
+    } else {
+      datesMusicien = '???? - '
+    }
+    if (dateMort !== undefined) {
+      datesMusicien = datesMusicien + dateMort
+    } else {
+      datesMusicien = datesMusicien + '????'
+    }
+
+    // DESCRIPTION
+    const description = musicianData.description
+      ? musicianData.description
+          .trim()
+          .split(';')
+          .map((_) => _.trim())
+          .filter((_) => _.length > 0)
+          .join(' • ')
+      : ''
+
+    return (
+      <Container maxWidth='md'>
+        <div className={classes.root}>
+          <div className={classes.fields}>
+            <form className={classes.form} noValidate autoComplete='off'>
+              {makeTextField('Nom', musicianData.surname)}
+              {makeTextField('Prénom', musicianData.given_name)}
+              {makeTextField('Dates', datesMusicien)}
+              {makeTextField('Statut', capitalize(musicianData.status_label))}
+              {makeTextField('Nationalité', musicianData.nationality_label)}
+              {makeTextField('Style', musicianData.style_label)}
+            </form>
+            <br />
+            <Box fontStyle='italic'>{description && <Typography>{description}</Typography>}</Box>
+          </div>
+          <Paper elevation={3} style={{ maxWidth: PICTURE_MAX_WIDTH }}>
+            <img
+              style={{
+                display: 'inline-block',
+                minHeight: 50,
+                maxWidth: PICTURE_MAX_WIDTH,
+                minWidth: PICTURE_MAX_WIDTH,
+                '&:after': {
+                  backgroundColor: 'red'
+                }
+              }}
+              alt='Wikipédia'
+              src={'/wikipedia_pictures/' + musicianData.musrad30_id + '.jpeg'}
+            />
+            {musicianData.wikipedia && (
+              <Link
+                style={{ display: 'block', padding: '1em', wordWrap: 'break-word' }}
+                href={musicianData.wikipedia}
+                target='_blank'
+              >
+                {decodeURI(musicianData.wikipedia)}
+              </Link>
+            )}
+          </Paper>
+        </div>
+        <br />
+        {composedWorks && composedWorks.length > 0 && (
+          <MaterialTable
+            title='Œuvres composées'
+            columns={[{ title: 'Titre', field: 'work_name', defaultSort: 'asc' }]}
+            data={composedWorks}
+            onRowClick={(evt, selectedRow) => {
+              const workId = selectedRow.work.slice(-36)
+              history.push('/work/' + workId)
+            }}
+            options={{
+              filtering: true,
+              pageSize: composedWorks.length < 10 ? composedWorks.length : 10,
+              pageSizeOptions: composedWorks.length < 10 ? [composedWorks.length] : [10, 30],
+              sorting: true,
+              cellStyle: { paddingBottom: '0.3em', paddingTop: '0.3em' },
+              headerStyle: { paddingBottom: '0.3em', paddingTop: '0.3em' }
+            }}
+          />
+        )}
+        <br />
+        {performedWorks && performedWorks.length > 0 && (
+          <MaterialTable
+            title='Œuvres interprétées'
+            columns={[
+              {
+                field: 'work_name',
+                title: 'Titre',
+                render: (row) => (row.work_name ? row.work_name : 'Œuvre anonyme')
+              },
+              { title: 'Radio', field: 'radio_name' },
+              {
+                field: 'start_date',
+                render: (row) => {
+                  let date = row.start_date.split('T')[0]
+                  date = date.split('-')
+                  return date[2] + '/' + date[1] + '/' + date[0]
+                },
+                title: 'Date'
+              },
+              {
+                render: (row) => {
+                  let HDeb = row.start_date.split('T')[1]
+                  HDeb = HDeb.split(':00+')[0]
+                  let HFin = row.end_date.split('T')[1]
+                  HFin = HFin.split(':00+')[0]
+                  return HDeb + ' — ' + HFin
+                },
+                sorting: false,
+                title: 'Heures'
+              },
+              {
+                field: 'composer_surname',
+                render: (row) => {
+                  return row.composer_surname
+                    ? (row.composer_given_name ? row.composer_given_name + ' ' : '') +
+                        row.composer_surname
+                    : 'Anonyme'
+                },
+                title: 'Compositeur•rice'
+              }
+            ]}
+            data={performedWorks}
+            onRowClick={(evt, selectedRow) => {
+              const workId = selectedRow.work.slice(-36)
+              history.push('/work/' + workId)
+            }}
+            options={{
+              filtering: true,
+              pageSize: performedWorks.length < 10 ? performedWorks.length : 10,
+              pageSizeOptions: performedWorks.length < 10 ? [performedWorks.length] : [10, 30],
+              sorting: true,
+              cellStyle: { paddingBottom: '0.3em', paddingTop: '0.3em' },
+              headerStyle: { paddingBottom: '0.3em', paddingTop: '0.3em' }
+            }}
+          />
+        )}
+        <br />
+      </Container>
     )
   }
+}
 
-  handleClick(rang) {
-    const WorkId = (rang).slice(-36)
-    this.props.history.push('/work/' + WorkId)
+const PICTURE_MAX_WIDTH = 200
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    alignItems: 'flex-start',
+    display: 'flex'
+  },
+  fields: { '& .MuiTextField-root': { margin: theme.spacing(1), marginLeft: 0 } },
+  form: {
+    padding: 0
   }
+}))
 
-  render() {
-    if (!this.state.musicianData) {
-      return <div>Données en cours de téléchargement...</div>
-    } else {
+function computeComposedWorks(data) {
+  let newDataComp = {}
+  let tabDataComp = []
+  const tab = data
 
-      let tableCompositions = null
-      let tableInterpretations = null
-
-      if (this.state.musicianData.composed_works !== undefined) {
-        //let compositionData = this.state.musicianData.composed_works;
-        tableCompositions =
-          <Grid>
-            <Box m={3}>
-              <MaterialTable
-                title='Oeuvres Composées'
-                columns={[
-                  { title: "Titre de l'oeuvre", field: "work_name" }
-                ]}
-                data={this.state.musicianData.composed_works}
-                onRowClick={((evt, selectedRow) => {
-                  const workId = selectedRow.work.slice(-36)
-                  this.props.history.push('/work/' + workId)
-                })}
-              >
-
-              </MaterialTable>
-            </Box>
-          </Grid>
-      }
-
-      if (this.state.musicianData.performed_works !== undefined) {
-        let performanceData = this.state.musicianData.performed_works;
-        tableInterpretations =
-          <Grid>
-            <Box m={3}>
-              <MaterialTable
-                title='Oeuvres Interprétées'
-                columns={[
-                  {
-                    title: "Titre", render: row => {
-                      return (row.work_name ? row.work_name : 'Oeuvre anonyme')
-                    }
-                  },
-                  { title: "Radio de diffusion", field: "radio_name" },
-                  {
-                    title: "Date d'interprétation", render: row => {
-                      let date = row.start_date.split('T')[0]
-                      date = date.split('-')
-                      return (date[2] + "-" + date[1] + "-" + date[0])
-                    }
-                  },
-                  {
-                    title: "Plage horaire d'interprétation", render: row => {
-                      let HDeb = row.start_date.split('T')[1]
-                      HDeb = HDeb.split(':00+')[0]
-                      let HFin = row.end_date.split('T')[1]
-                      HFin = HFin.split(':00+')[0]
-                      return (HDeb + " - " + HFin)
-                    }
-                  },
-                  {
-                    title: "Compositeur de l'oeuvre", render: row => {
-                      return (row.composer_surname ? (row.composer_given_name ? row.composer_given_name + " " : "") + row.composer_surname : 'Compositeur anonyme')
-                    }
-                  },
-                ]}
-                data={performanceData}
-                onRowClick={((evt, selectedRow) => {
-                  const workId = selectedRow.work.slice(-36)
-                  this.props.history.push('/work/' + workId)
-                })}>
-              </MaterialTable>
-            </Box>
-          </Grid>
-      }
-
-      const dateNaissance = this.state.musicianData.birth_date
-      const dateMort = this.state.musicianData.death_date
-      let datesMusicien = ""
-      if (dateNaissance !== undefined) {
-        datesMusicien = dateNaissance + " - "
-      } else {
-        datesMusicien = "???? - "
-      }
-      if (dateMort !== undefined) {
-        datesMusicien = datesMusicien + dateMort
-      }
-      else {
-        datesMusicien = datesMusicien + "????"
-      }
-
-      return (
-        <Container>
-          <Typography component='h1' variant='h3'>Page du musicien</Typography>
-          <Grid container direction='row' justify='flex-start' alignItems='center'>
-            <Grid item>
-              <Typography variant='button' component='h2'>
-                <Box p={2}>Nom :</Box>
-                <Box p={2}>Prénom :</Box>
-                <Box p={2}>Années d'existence :</Box>
-                <Box p={2}>Statut :</Box>
-                  <Box p={2}>Nationalite :</Box>
-                  <Box p={2}>Style :</Box>
-                  <Box p={2}>Infos :</Box>
-              </Typography>
-            </Grid>
-
-            <Grid item>
-              <Typography variant='body1' component='body' >
-                <Box p={2}>{this.state.musicianData.surname}</Box>
-                <Box p={2}>{this.state.musicianData.given_name}</Box>
-                <Box p={2}>{datesMusicien}</Box>
-                <Box p={2}>{this.state.musicianData.status_label}</Box>
-                <Box p={2}>{this.state.musicianData.nationality_label}</Box>
-                <Box p={2}>{this.state.musicianData.style_label}</Box>
-                <Box p={2}>{this.state.musicianData.description}</Box>
-              </Typography>
-            </Grid>
-          </Grid>
-
-          {tableCompositions}
-          {tableInterpretations}
-        </Container>
-      )
+  for (let i = 0; i < tab.length; i++) {
+    if (!(tab[i].work in newDataComp)) {
+      newDataComp[tab[i].work] = tab[i].work_name
     }
   }
+
+  for (let key in newDataComp) {
+    let workObj = {}
+    workObj.work = key
+    workObj.work_name = newDataComp[key]
+    tabDataComp.push(workObj)
+  }
+
+  return tabDataComp
+}
+
+function makeTextField(f, v) {
+  return (
+    <TextField
+      label={f}
+      defaultValue={v}
+      InputProps={{
+        readOnly: true
+      }}
+    />
+  )
 }
 
 export default withRouter(Musician)

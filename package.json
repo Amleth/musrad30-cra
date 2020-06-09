@@ -9,14 +9,14 @@
     "eject": "react-scripts eject"
   },
   "dependencies": {
-    "@material-ui/core": "latest",
+    "@material-ui/core": "^4.10.1",
     "@material-ui/icons": "^4.9.1",
     "axios": "^0.19.2",
-    "clsx": "latest",
+    "clsx": "^1.1.1",
     "lodash": "^4.17.15",
-    "material-table": "^1.59.0",
-    "react": "latest",
-    "react-dom": "latest",
+    "material-table": "^1.60.0",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "latest"
   },

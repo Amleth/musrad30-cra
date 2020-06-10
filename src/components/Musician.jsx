@@ -31,7 +31,7 @@ function Musician({ history, match }) {
 
   if (Object.entries(musicianData).length === 0) {
     return (
-      <Container maxWidth='md'>
+      <Container maxWidth='md' align='center'>
         <CircularProgress />
       </Container>
     )

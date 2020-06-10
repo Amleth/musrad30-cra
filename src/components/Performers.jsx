@@ -1,56 +1,50 @@
-import React from 'react'
+import { Container } from '@material-ui/core'
+import { CircularProgress } from '@material-ui/core'
 import MaterialTable from 'material-table'
+import React from 'react'
+import { useEffect, useState } from 'react'
 import { withRouter } from 'react-router'
-import axios from 'axios'
 
-// this.props.history.push("/musician/133c5242-11de-419f-b6bf-3b61170a20d2")
+function Performers({ history }) {
+  const [data, setData] = useState([])
 
-class Performers extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      performersData: [],
-    }
+  async function fetchData() {
+    const res = await fetch('http://data-iremus.huma-num.fr/api/musrad30/performers/')
+    res.json().then((res) => setData(res))
   }
 
-  componentDidMount() {
-    axios.get('http://data-iremus.huma-num.fr/api/musrad30/performers/').then(res => {
-      this.setState({ performersData: res.data })
-    })
-  }
+  useEffect(() => {
+    fetchData()
+  }, [])
 
-  render() {
-    if (!this.state.performersData) {
-      return <div>Données en cours de téléchargement...</div>
-    } else {
-      return (
-        <div style={{ maxWidth: '100%' }}>
-          <MaterialTable
-            title='Liste des interprètes'
-            columns={[
-              { title: 'Nom', field: 'surname' },
-              { title: 'Prenom', field: 'given_name' },
-              { title: 'Nationalité', field: 'nationality_label' },
-              { title: 'Style', field: 'style_label' },
-            ]}
-            options={{
-              pageSize : 20,
-              pageSizeOptions : [10,20,50],
-              filtering : true,
-              sorting : true
-            }}
-            data={this.state.performersData}
-            onRowClick={((evt, selectedRow) => {
-              const performerId = selectedRow.performer.slice(-36)
-              this.props.history.push('/musician/'+performerId)
-            })}
-          >
-
-          </MaterialTable>
-        </div>
-      )
-    }
-  }
+  return data.length === 0 ? (
+    <Container maxWidth='md' align='center'>
+      <CircularProgress />
+    </Container>
+  ) : (
+    <MaterialTable
+      title='Liste des interprètes'
+      columns={[
+        { title: 'Nom', field: 'surname' },
+        { title: 'Prénom', field: 'given_name' },
+        { title: 'Nationalité', field: 'nationality_label' },
+        { title: 'Style', field: 'style_label' }
+      ]}
+      options={{
+        pageSize: 20,
+        pageSizeOptions: [20, 100],
+        filtering: true,
+        sorting: true,
+        cellStyle: { paddingBottom: '0.3em', paddingTop: '0.3em' },
+        headerStyle: { paddingBottom: '0.3em', paddingTop: '0.3em' }
+      }}
+      data={data}
+      onRowClick={(evt, selectedRow) => {
+        const performerId = selectedRow.performer.slice(-36)
+        history.push('/musician/' + performerId)
+      }}
+    ></MaterialTable>
+  )
 }
 
 export default withRouter(Performers)

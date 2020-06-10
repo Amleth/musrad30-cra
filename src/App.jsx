@@ -60,7 +60,7 @@ export default function App() {
             to='/identified_works'
             startIcon={<i className='fas fa-music'></i>}
           >
-            Oeuvres Identifiées
+            Œuvres Identifiées
           </Button>
           <Button
             color='inherit'

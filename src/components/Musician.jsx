@@ -1,17 +1,9 @@
-import {
-  Box,
-  CircularProgress,
-  Container,
-  Link,
-  Paper,
-  TextField,
-  Typography
-} from '@material-ui/core'
+import { CircularProgress, Container, Link, Paper } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import MaterialTable from 'material-table'
 import React, { useEffect, useState } from 'react'
 import { withRouter } from 'react-router'
-import { capitalize } from '../common'
+import { capitalize, makeTextField } from '../common'
 
 function Musician({ history, match }) {
   const classes = useStyles()
@@ -72,30 +64,24 @@ function Musician({ history, match }) {
     return (
       <Container maxWidth='md'>
         <div className={classes.root}>
-          <div className={classes.fields}>
-            <form className={classes.form} noValidate autoComplete='off'>
-              {makeTextField('Nom', musicianData.surname)}
-              {makeTextField('Prénom', musicianData.given_name)}
-              {makeTextField('Dates', datesMusicien)}
-              {makeTextField('Statut', capitalize(musicianData.status_label))}
-              {makeTextField('Nationalité', musicianData.nationality_label)}
-              {makeTextField('Style', musicianData.style_label)}
-            </form>
-            <br />
-            <Box fontStyle='italic'>{description && <Typography>{description}</Typography>}</Box>
-          </div>
+          <form className={classes.form} noValidate autoComplete='off'>
+            {makeTextField('Nom', musicianData.surname)}
+            {makeTextField('Prénom', musicianData.given_name)}
+            {makeTextField('Dates', datesMusicien)}
+            {makeTextField('Statut', capitalize(musicianData.status_label))}
+            {makeTextField('Nationalité', musicianData.nationality_label)}
+            {makeTextField('Style', musicianData.style_label)}
+            {makeTextField('Description', description, true, true)}
+          </form>
           <Paper elevation={3} style={{ maxWidth: PICTURE_MAX_WIDTH }}>
             <img
               style={{
                 display: 'inline-block',
                 minHeight: 50,
                 maxWidth: PICTURE_MAX_WIDTH,
-                minWidth: PICTURE_MAX_WIDTH,
-                '&:after': {
-                  backgroundColor: 'red'
-                }
+                minWidth: PICTURE_MAX_WIDTH
               }}
-              alt='Wikipédia'
+              alt='Portrait'
               src={'/wikipedia_pictures/' + musicianData.musrad30_id + '.jpeg'}
             />
             {musicianData.wikipedia && (
@@ -199,9 +185,16 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'flex-start',
     display: 'flex'
   },
-  fields: { '& .MuiTextField-root': { margin: theme.spacing(1), marginLeft: 0 } },
   form: {
-    padding: 0
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    padding: 0,
+    '& .MuiTextField-root': {
+      margin: theme.spacing(1),
+      marginLeft: 0,
+      marginRight: theme.spacing(4)
+    }
   }
 }))
 
@@ -224,18 +217,6 @@ function computeComposedWorks(data) {
   }
 
   return tabDataComp
-}
-
-function makeTextField(f, v) {
-  return (
-    <TextField
-      label={f}
-      defaultValue={v}
-      InputProps={{
-        readOnly: true
-      }}
-    />
-  )
 }
 
 export default withRouter(Musician)

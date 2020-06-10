@@ -43,12 +43,12 @@ function Home() {
           <Typography variant='body1' color='textSecondary' align='justify'>
             Cette base de données a été créée à partir d’un échantillonnage de 3000 heures de
             programmes musicaux sur des radios françaises des années trente. Le relevé des quelque
-            20 000 références d’œuvres génère deux groupes de musiciens : plus de 2000 compositeurs
-            et presque autant d’interprètes (individuels ou collectifs). {<br />} La base de données
-            permet d’exploiter ces inventaires de manières qualitative et quantitative. Elle permet
-            aussi une forte interaction entre les musiciens et les programmes cités, mais aussi des
-            tris par nationalité, par époque, par genre musical, ou bien encore par type de
-            programme.
+            20 000 références d’œuvres génère deux groupes de musiciens : plus de 2000
+            compositeur•rice•s et presque autant d’interprètes (individuels ou collectifs). {<br />}{' '}
+            La base de données permet d’exploiter ces inventaires de manières qualitative et
+            quantitative. Elle permet aussi une forte interaction entre les musiciens et les
+            programmes cités, mais aussi des tris par nationalité, par époque, par genre musical, ou
+            bien encore par type de programme.
           </Typography>
         </Grid>
         <Grid item xs={5}>

@@ -3,50 +3,49 @@ import { CircularProgress, Container, Typography } from '@material-ui/core'
 import MaterialTable from 'material-table'
 import React, { useEffect, useState } from 'react'
 import { withRouter } from 'react-router'
+import { capitalize } from '../common'
 
 function Work({ history, match }) {
   const id = match.params.id
 
-  const [workData, setWorkData] = useState([])
+  const [data, setData] = useState([])
 
   useEffect(() => {
     async function fetchData() {
       const res = await fetch('http://data-iremus.huma-num.fr/api/musrad30/work/' + id)
       res.json().then((res) => {
-        setWorkData(computeData(res))
+        setData(computeData(res))
       })
     }
     fetchData()
   }, [id])
 
-  if (workData.length === 0) {
+  if (data.length === 0) {
     return (
       <Container maxWidth='md'>
         <CircularProgress />
       </Container>
     )
   } else {
-    const w = workData[0]
+    const w = data[0]
+
     // Plage horaire
     const heuredebut = w.super_event_start_date.split('T')[1]
     const heurefin = w.super_event_end_date.split('T')[1]
     const plageHoraire = heuredebut.split(':00+')[0] + ' — ' + heurefin.split(':00+')[0]
 
     // Compositeurs
-    let compositeurs = ''
-    if (w.composer[0] !== undefined) {
-      for (let i = 0; i < w.composer.length - 1; i++) {
-        compositeurs = compositeurs + w.composer[i] + ', '
-      }
-      compositeurs = compositeurs + w.composer[w.composer.length - 1]
-    } else compositeurs = 'Anonyme'
+    const compositeurs =
+      data.map((_) => _.composer).join('').length === 0
+        ? 'Anonyme'
+        : data.map((_) => _.composer).join(', ')
 
     return (
       <Container maxWidth='md'>
         <Typography component='h1' variant='h4'>
-          {w.work_name}
+          {w.work_name || 'Œuvre non titrée'}
         </Typography>
-        <Typography component='h1' variant='h5'>
+        <Typography component='h2' variant='h5'>
           {compositeurs}
         </Typography>
         <br />
@@ -54,7 +53,11 @@ function Work({ history, match }) {
           title='Diffusions'
           columns={[
             { title: 'Radio', field: 'super_event_station_label' },
-            { title: 'Jour', field: 'super_event_jour_debut_diffusion' },
+            {
+              title: 'Jour',
+              field: 'super_event_jour_debut_diffusion',
+              render: (row) => capitalize(row.super_event_jour_debut_diffusion)
+            },
             {
               title: 'Date',
               render: (rowData) => {
@@ -70,13 +73,23 @@ function Work({ history, match }) {
             {
               title: 'Plage horaire',
               type: 'datetime',
-              render: (r) => {
-                return plageHoraire
-              }
+              render: (row) => plageHoraire
             },
-            { title: 'Programme', field: 'super_event_title_label' },
-            { title: 'Type du programme', field: 'super_event_type_label' },
-            { title: 'Format de diffusion', field: 'super_event_format_label' },
+            {
+              title: 'Programme',
+              field: 'super_event_title_label',
+              render: (row) => capitalize(row.super_event_title_label)
+            },
+            {
+              title: 'Type du programme',
+              field: 'super_event_type_label',
+              render: (row) => capitalize(row.super_event_type_label)
+            },
+            {
+              title: 'Format de diffusion',
+              field: 'super_event_format_label',
+              render: (row) => capitalize(row.super_event_format_label)
+            },
             {
               title: 'Interprète',
               render: (r) => {
@@ -91,7 +104,7 @@ function Work({ history, match }) {
               }
             }
           ]}
-          data={workData}
+          data={data}
           onRowClick={(evt, selectedRow) => {
             const progId = selectedRow.super_event.slice(-36)
             history.push('/super_event/' + progId)

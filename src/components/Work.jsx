@@ -29,18 +29,12 @@ function Work({ history, match }) {
   } else {
     const w = data[0]
 
-    // Plage horaire
-    const heuredebut = w.super_event_start_date.split('T')[1]
-    const heurefin = w.super_event_end_date.split('T')[1]
-    const plageHoraire = heuredebut.split(':00+')[0] + ' — ' + heurefin.split(':00+')[0]
-
-    // Compositeurs
     const compositeurs =
-      data.map((_) => _.composer).join('').length === 0
-        ? 'Anonyme'
-        : data.map((_) => _.composer).join(', ')
+    w.composer.join(', ')
 
+    console.log(data)
     return (
+      
       <Container maxWidth='md'>
         <Typography component='h1' variant='h4'>
           {w.work_name || 'Œuvre non titrée'}
@@ -60,6 +54,7 @@ function Work({ history, match }) {
             },
             {
               title: 'Date',
+
               render: (rowData) => {
                 return (
                   rowData.super_event_start_date.slice(8, 10) +
@@ -73,7 +68,7 @@ function Work({ history, match }) {
             {
               title: 'Plage horaire',
               type: 'datetime',
-              render: (row) => plageHoraire
+              render: (row) => row.super_event_start_date.split('T')[1].split(':00+')[0] + ' — ' + row.super_event_end_date.split('T')[1].split(':00+')[0]
             },
             {
               title: 'Programme',
@@ -123,8 +118,11 @@ function Work({ history, match }) {
 
 function computeData(res) {
   let newData = []
+
   const data = lodash.groupBy(res, 'sub_event')
-  for (const sub_event in data) {
+
+  for (let sub_event in data) {
+
     const performers = data[sub_event].map((item) =>
       item.performer_surname
         ? (item.performer_given_name ? item.performer_given_name + ' ' : '') +
@@ -141,10 +139,12 @@ function computeData(res) {
     const distinctComposers = [...new Set(composers)]
     data[sub_event][0].performer = distinctPerformers
     data[sub_event][0].composer = distinctComposers
-    newData.push(data[sub_event][0])
 
-    return newData
+    newData.push(data[sub_event][0])
+    
   }
+
+  return newData
 }
 
 export default withRouter(Work)

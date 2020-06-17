@@ -38,7 +38,9 @@ function Program({ history, match }) {
     minutes = minutes.split('M')[0]
     duree = heures + 'h' + minutes + 'min.'
 
+    console.log(data)
     return (
+      
       <Container maxWidth='md'>
         <form className={classes.form} noValidate autoComplete='off'>
           {makeTextField('Titre', data[0].title_label)}
@@ -71,8 +73,14 @@ function Program({ history, match }) {
               render: (r) => {
                 if (r.composer[0]) {
                   console.log(r.composer.length)
+                  let tableauVerif = []
                   let chaine = ''
                   for (let i = 0; i < r.composer.length - 1; i++) {
+                    if (!(tableauVerif.includes(r.composer[i]))){
+                      tableauVerif.push(r.composer[i])
+                    }
+                  }
+                  for(let i = 0; i < tableauVerif.length - 1; i++){
                     chaine = chaine + r.composer[i] + ', '
                   }
                   chaine = chaine + r.composer[r.composer.length - 1]

@@ -26,7 +26,7 @@ const useStyles = makeStyles({
 export default function App() {
   const classes = useStyles()
   return (
-    <Router>
+    <Router basename='/musrad30'>
       <AppBar position='static'>
         <Toolbar className={classes.bar}>
           <Button

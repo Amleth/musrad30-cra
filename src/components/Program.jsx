@@ -28,8 +28,8 @@ function Program({ history, match }) {
     let description = data[0].description
     description = description.split('@fr')[0]
 
-    let heuredebut = data[0].start_date.split('T')[1]
-    let heurefin = data[0].end_date.split('T')[1]
+    let heuredebut = !data[0].start_date ? '?' : data[0].start_date.split('T')[1]
+    let heurefin = !data[0].end_date ? '' : data[0].end_date.split('T')[1]
     let plageHoraire = heuredebut.split(':00+')[0] + ' - ' + heurefin.split(':00+')[0]
 
     let duree = data[0].duration.split('T')[1]
@@ -38,9 +38,7 @@ function Program({ history, match }) {
     minutes = minutes.split('M')[0]
     duree = heures + 'h' + minutes + 'min.'
 
-    console.log(data)
     return (
-      
       <Container maxWidth='md'>
         <form className={classes.form} noValidate autoComplete='off'>
           {makeTextField('Titre', data[0].title_label)}
@@ -49,11 +47,13 @@ function Program({ history, match }) {
             'Date de diffusion',
             data[0].jour_debut_diffusion +
               ' ' +
-              data[0].start_date.slice(8, 10) +
-              '/' +
-              data[0].start_date.slice(5, 7) +
-              '/' +
-              data[0].start_date.slice(0, 4)
+              (!data[0].start_date
+                ? ''
+                : data[0].start_date.slice(8, 10) +
+                  '/' +
+                  data[0].start_date.slice(5, 7) +
+                  '/' +
+                  data[0].start_date.slice(0, 4))
           )}
           {makeTextField('Plage horaire', plageHoraire)}
           {makeTextField('Durée', duree)}
@@ -72,15 +72,14 @@ function Program({ history, match }) {
               sorting: false,
               render: (r) => {
                 if (r.composer[0]) {
-                  console.log(r.composer.length)
                   let tableauVerif = []
                   let chaine = ''
                   for (let i = 0; i < r.composer.length - 1; i++) {
-                    if (!(tableauVerif.includes(r.composer[i]))){
+                    if (!tableauVerif.includes(r.composer[i])) {
                       tableauVerif.push(r.composer[i])
                     }
                   }
-                  for(let i = 0; i < tableauVerif.length - 1; i++){
+                  for (let i = 0; i < tableauVerif.length - 1; i++) {
                     chaine = chaine + r.composer[i] + ', '
                   }
                   chaine = chaine + r.composer[r.composer.length - 1]
@@ -91,7 +90,6 @@ function Program({ history, match }) {
             {
               render: (r) => {
                 if (r.performer[0]) {
-                  console.log(r.performer.length)
                   let chaine = ''
                   for (let i = 0; i < r.performer.length - 1; i++) {
                     chaine = chaine + r.performer[i] + ', '

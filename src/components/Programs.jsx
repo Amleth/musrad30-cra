@@ -1,3 +1,4 @@
+import { parseISO } from 'date-fns'
 import { Container } from '@material-ui/core'
 import { CircularProgress } from '@material-ui/core'
 import MaterialTable from 'material-table'
@@ -11,7 +12,16 @@ function Programs({ history }) {
 
   async function fetchData() {
     const res = await fetch('http://data-iremus.huma-num.fr/api/musrad30/super_events')
-    res.json().then((res) => setData(res))
+    res.json().then((res) => {
+      res = res.map((p) => ({
+        ...p,
+        composers_count: parseInt(p['composers_count'].split('^^')[0]),
+        performers_count: parseInt(p['performers_count'].split('^^')[0]),
+        works_count: parseInt(p['works_count'].split('^^')[0]),
+        date: p['start_date'] ? parseISO(p['start_date'].split('^^')[0]) : null
+      }))
+      setData(res)
+    })
   }
 
   useEffect(() => {
@@ -28,18 +38,17 @@ function Programs({ history }) {
       columns={[
         { title: 'Radio', field: 'station_label' },
         {
-          title: 'Date',
-          sorting: false,
+          field: 'date',
           filtering: true,
-          render: (rowData) => {
-            let date = rowData.start_date.split('T')[0]
-            return date.split('-')[2] + '/' + date.split('-')[1] + '/' + date.split('-')[0]
-          }
+          sorting: true,
+          title: 'Date',
+          render: (rowData) => (rowData['date'] ? rowData['date'].toLocaleDateString() : '')
         },
         {
           title: 'Plage horaire',
-          type: 'date',
+          sorting: false,
           render: (rowData) => {
+            if (!rowData.start_date || !rowData.end_date) return '?'
             let heuredebut = rowData.start_date.split('T')[1]
             let heurefin = rowData.end_date.split('T')[1]
             return heuredebut.split(':00+')[0] + ' — ' + heurefin.split(':00+')[0]
@@ -58,21 +67,15 @@ function Programs({ history }) {
         { title: 'Format', field: 'format_label', render: (row) => capitalize(row.format_label) },
         {
           title: 'Compositeur•rice•s mentionné•e•s',
-          render: (rowData) => {
-            return rowData.composers_count.split('^^')[0]
-          }
+          field: 'composers_count'
         },
         {
           title: 'Interprètes mentionné•e•s',
-          render: (rowData) => {
-            return rowData.performers_count.split('^^')[0]
-          }
+          field: 'performers_count'
         },
         {
           title: 'Œuvres mentionnées',
-          render: (rowData) => {
-            return rowData.works_count.split('^^')[0]
-          }
+          field: 'works_count'
         }
       ]}
       options={{

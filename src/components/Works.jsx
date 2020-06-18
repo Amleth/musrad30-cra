@@ -26,7 +26,16 @@ function Works({ history }) {
     <MaterialTable
       title='Liste des œuvres identifiées'
       columns={[
-        { title: 'Nom', field: 'work_name' },
+        {
+          title: 'Nom',
+          field: 'work_name',
+          customSort: (a, b) => {
+            if (!a.work_name && !b.work_name) return 0
+            if (!a.work_name) return 1
+            if (!b.work_name) return -1
+            return a.work_name.localeCompare(b.work_name)
+          }
+        },
         {
           title: 'Compositeur•rice•s',
           field: 'composer',

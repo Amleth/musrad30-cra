@@ -70,8 +70,8 @@ function Performers({ history }) {
         <MaterialTable
           title='Liste des interprètes'
           columns={[
-            { title: 'Nom', field: 'surname' },
-            { title: 'Prénom', field: 'given_name' },
+            { title: 'Nom', field: 'surname', defaultSort : "asc" },
+            { title: 'Prénom', field: 'given_name'},
             { title: 'Nationalité', field: 'nationality_label' },
             { title: 'Style', field: 'style_label', defaultFilter: style }
           ]}

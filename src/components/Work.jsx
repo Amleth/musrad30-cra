@@ -32,7 +32,6 @@ function Work({ history, match }) {
     const compositeurs =
     w.composer.join(', ')
 
-    console.log(data)
     return (
       
       <Container maxWidth='md'>

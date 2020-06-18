@@ -34,7 +34,6 @@ function Works({ history }) {
           sorting: false,
           render: (r) => {
             if (r.composer[0]) {
-              console.log(r.composer.length)
               let chaine = ''
               for (let i = 0; i < r.composer.length - 1; i++) {
                 chaine = chaine + r.composer[i] + ', '

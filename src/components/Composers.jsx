@@ -65,6 +65,7 @@ function Composers({ history }) {
           ))}
         </Select>
       </FormControl>
+      
       <MaterialTable
         title='Liste des compositeur•rice•s'
         columns={[

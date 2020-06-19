@@ -61,6 +61,15 @@ function Musician({ history, match }) {
           .join(' • ')
       : ''
 
+    // STATUTS
+    let statuts = ''
+    if (musicianData.statuses){
+      for (let i = 0 ; i < musicianData.statuses.length -1 ; i++){
+        statuts = statuts + capitalize(String(musicianData.statuses[i].label)) + ', '
+      }
+      statuts = statuts + capitalize(String(musicianData.statuses[musicianData.statuses.length - 1].label))
+    }
+    
     return (
       <Container maxWidth='md'>
         <div className={classes.root}>
@@ -68,7 +77,7 @@ function Musician({ history, match }) {
             {makeTextField('Nom', musicianData.surname)}
             {makeTextField('Prénom', musicianData.given_name)}
             {makeTextField('Dates', datesMusicien)}
-            {makeTextField('Statut', capitalize(musicianData.status_label))}
+            {makeTextField('Statut', statuts)}
             {makeTextField('Nationalité', musicianData.nationality_label)}
             {makeTextField('Style', musicianData.style_label)}
             {makeTextField('Description', description, true, true)}

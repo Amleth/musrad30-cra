@@ -1,5 +1,5 @@
 import lodash from 'lodash'
-import { CircularProgress, Container, Typography } from '@material-ui/core'
+import { CircularProgress, Container, Typography, Link } from '@material-ui/core'
 import MaterialTable from 'material-table'
 import React, { useEffect, useState } from 'react'
 import { withRouter } from 'react-router'
@@ -14,7 +14,7 @@ function Work({ history, match }) {
     async function fetchData() {
       const res = await fetch('http://data-iremus.huma-num.fr/api/musrad30/work/' + id)
       res.json().then((res) => {
-        setData(computeData(res))
+        setData(res)
       })
     }
     fetchData()
@@ -27,19 +27,23 @@ function Work({ history, match }) {
       </Container>
     )
   } else {
-    const w = data[0]
+    
+    console.log(data)
 
-    const compositeurs =
-    w.composer.join(', ')
+    // const w = data[0]
+
+    // const compositeurs =
+    // w.composer.join(', ')
 
     return (
       
       <Container maxWidth='md'>
         <Typography component='h1' variant='h4'>
-          {w.work_name || 'Œuvre non titrée'}
+          {data.work_name || 'Œuvre non titrée'}
         </Typography>
         <Typography component='h2' variant='h5'>
-          {compositeurs}
+          Compositeurs
+          {/* {compositeurs} */}
         </Typography>
         <br />
         <MaterialTable
@@ -53,6 +57,7 @@ function Work({ history, match }) {
             },
             {
               title: 'Date',
+              field: 'super_event_start_date',
 
               render: (rowData) => {
                 return (
@@ -86,19 +91,22 @@ function Work({ history, match }) {
             },
             {
               title: 'Interprète',
+              field : 'performers',
               render: (r) => {
-                if (r.performer[0]) {
-                  let chaine = ''
-                  for (let i = 0; i < r.performer.length - 1; i++) {
-                    chaine = chaine + r.performer[i] + ', '
-                  }
-                  chaine = chaine + r.performer[r.performer.length - 1]
-                  return chaine
-                } else return 'Anonyme'
+                if (r.performers) {
+                  // let chaine = ''
+                  // for (let i = 0; i < r.performers.length - 1; i++) {
+                  //   chaine = chaine + r.performers[i].performer_surname + ', '
+                  // }
+                  // chaine = chaine + r.performers[r.performers.length - 1].performer_surname
+                  // return chaine
+                  return r.performers.map((p => (<Link key={p.performer} href={'/musician/' + p.performer.slice(-36)}>{p.performer_surname + '\n'}</Link>)))
+                } else
+                 return 'Anonyme'
               }
             }
           ]}
-          data={data}
+          data={data.events}
           onRowClick={(evt, selectedRow) => {
             const progId = selectedRow.super_event.slice(-36)
             history.push('/super_event/' + progId)
@@ -115,35 +123,38 @@ function Work({ history, match }) {
   }
 }
 
-function computeData(res) {
-  let newData = []
+// function computeData(res) {
+//   let newData = []
 
-  const data = lodash.groupBy(res, 'sub_event')
+//   const data = lodash.groupBy(res, 'sub_event')
 
-  for (let sub_event in data) {
+//   console.log(data)
 
-    const performers = data[sub_event].map((item) =>
-      item.performer_surname
-        ? (item.performer_given_name ? item.performer_given_name + ' ' : '') +
-          item.performer_surname
-        : null
-    )
+//   for (let sub_event in data) {
+//     console.log(data[sub_event][9])
+//     const performers = data[sub_event][9].map((item) =>
+//       item.performers.performer_surname
+//         ? (item.performers.performer_given_name ? item.performers.performer_given_name + ' ' : '') +
+//           item.performers.performer_surname
+//         : null
+//     )
+//     console.log('performers :' + performers)
 
-    const composers = data[sub_event].map((item) =>
-      item.composer_surname
-        ? (item.composer_given_name ? item.composer_given_name + ' ' : '') + item.composer_surname
-        : null
-    )
-    const distinctPerformers = [...new Set(performers)]
-    const distinctComposers = [...new Set(composers)]
-    data[sub_event][0].performer = distinctPerformers
-    data[sub_event][0].composer = distinctComposers
+//     const composers = data[sub_event].map((item) =>
+//       item.composer_surname
+//         ? (item.composer_given_name ? item.composer_given_name + ' ' : '') + item.composer_surname
+//         : null
+//     )
+//     // const distinctPerformers = [...new Set(performers)]
+//     const distinctComposers = [...new Set(composers)]
+//     // data[sub_event][0].performer = distinctPerformers  
+//     data[sub_event][0].composer = distinctComposers
 
-    newData.push(data[sub_event][0])
+//     newData.push(data[sub_event][0])
     
-  }
+//   }
 
-  return newData
-}
+//   return newData
+// }
 
 export default withRouter(Work)

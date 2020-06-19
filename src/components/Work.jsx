@@ -27,13 +27,6 @@ function Work({ history, match }) {
       </Container>
     )
   } else {
-    
-    console.log(data)
-
-    // const w = data[0]
-
-    // const compositeurs =
-    // w.composer.join(', ')
 
     return (
       

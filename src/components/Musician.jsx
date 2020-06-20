@@ -63,13 +63,14 @@ function Musician({ history, match }) {
 
     // STATUTS
     let statuts = ''
-    if (musicianData.statuses){
-      for (let i = 0 ; i < musicianData.statuses.length -1 ; i++){
+    if (musicianData.statuses) {
+      for (let i = 0; i < musicianData.statuses.length - 1; i++) {
         statuts = statuts + capitalize(String(musicianData.statuses[i].label)) + ', '
       }
-      statuts = statuts + capitalize(String(musicianData.statuses[musicianData.statuses.length - 1].label))
+      statuts =
+        statuts + capitalize(String(musicianData.statuses[musicianData.statuses.length - 1].label))
     }
-    
+
     return (
       <Container maxWidth='md'>
         <div className={classes.root}>
@@ -91,7 +92,9 @@ function Musician({ history, match }) {
                 minWidth: PICTURE_MAX_WIDTH
               }}
               alt='Portrait'
-              src={'/wikipedia_pictures/' + musicianData.musrad30_id + '.jpeg'}
+              src={
+                process.env.PUBLIC_URL + '/wikipedia_pictures/' + musicianData.musrad30_id + '.jpeg'
+              }
             />
             {musicianData.wikipedia && (
               <Link

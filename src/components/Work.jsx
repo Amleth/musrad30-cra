@@ -1,5 +1,5 @@
 import lodash from 'lodash'
-import { CircularProgress, Container, Typography, Link } from '@material-ui/core'
+import { CircularProgress, Container, Typography, Link, List, ListItem } from '@material-ui/core'
 import MaterialTable from 'material-table'
 import React, { useEffect, useState } from 'react'
 import { withRouter } from 'react-router'
@@ -28,15 +28,23 @@ function Work({ history, match }) {
     )
   } else {
 
+    const compositeurs = <List> 
+      {(data.composers
+      ? data.composers.map((c) => (
+      <ListItem> <Link key={c.composer} href={'/musician/' + c.composer.slice(-36)}> {(c.composer_given_name ? c.composer_given_name : '') + ' ' + c.composer_surname} </Link> </ListItem>
+      ))
+      : <ListItem> 'Compositeur Anonyme') </ListItem>)
+    }
+       </List>
+
     return (
-      
+
       <Container maxWidth='md'>
         <Typography component='h1' variant='h4'>
           {data.work_name || 'Œuvre non titrée'}
         </Typography>
         <Typography component='h2' variant='h5'>
-          Compositeurs
-          {/* {compositeurs} */}
+          {compositeurs}
         </Typography>
         <br />
         <MaterialTable
@@ -84,7 +92,7 @@ function Work({ history, match }) {
             },
             {
               title: 'Interprète',
-              field : 'performers',
+              field: 'performers',
               render: (r) => {
                 if (r.performers) {
                   // let chaine = ''
@@ -95,7 +103,7 @@ function Work({ history, match }) {
                   // return chaine
                   return r.performers.map((p => (<Link key={p.performer} href={'/musician/' + p.performer.slice(-36)}>{p.performer_surname + '\n'}</Link>)))
                 } else
-                 return 'Anonyme'
+                  return 'Anonyme'
               }
             }
           ]}
@@ -144,7 +152,7 @@ function Work({ history, match }) {
 //     data[sub_event][0].composer = distinctComposers
 
 //     newData.push(data[sub_event][0])
-    
+
 //   }
 
 //   return newData

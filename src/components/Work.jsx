@@ -1,4 +1,3 @@
-import lodash from 'lodash'
 import { CircularProgress, Container, Typography, Link, List, ListItem } from '@material-ui/core'
 import MaterialTable from 'material-table'
 import React, { useEffect, useState } from 'react'

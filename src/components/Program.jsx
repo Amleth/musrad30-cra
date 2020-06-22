@@ -1,5 +1,5 @@
-import lodash from 'lodash'
-import { Container } from '@material-ui/core'
+import lodash, { random } from 'lodash'
+import { Container, Link, ListItem, List } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import MaterialTable from 'material-table'
 import React, { useEffect, useState } from 'react'
@@ -46,14 +46,14 @@ function Program({ history, match }) {
           {makeTextField(
             'Date de diffusion',
             data[0].jour_debut_diffusion +
-              ' ' +
-              (!data[0].start_date
-                ? ''
-                : data[0].start_date.slice(8, 10) +
-                  '/' +
-                  data[0].start_date.slice(5, 7) +
-                  '/' +
-                  data[0].start_date.slice(0, 4))
+            ' ' +
+            (!data[0].start_date
+              ? ''
+              : data[0].start_date.slice(8, 10) +
+              '/' +
+              data[0].start_date.slice(5, 7) +
+              '/' +
+              data[0].start_date.slice(0, 4))
           )}
           {makeTextField('Plage horaire', plageHoraire)}
           {makeTextField('Durée', duree)}
@@ -70,52 +70,56 @@ function Program({ history, match }) {
             {
               title: 'Compositeurs',
               sorting: false,
-              render: (r) => {
-                if (r.composer[0]) {
-                  let tableauVerif = []
-                  let chaine = ''
-                  for (let i = 0; i < r.composer.length - 1; i++) {
-                    if (!tableauVerif.includes(r.composer[i])) {
-                      tableauVerif.push(r.composer[i])
-                    }
+              render: (rowdata) => {
+                const composers = compositeurs(rowdata)
+                const composant = <List>
+                  { 
+                  (Object.keys(composers).map((c) =>(
+                    composers[c] !== 'null'
+                    ?(<ListItem key = {c}>
+                      <Link key={c} href={'/musician/' + c.slice(-36)}>{composers[c]}</Link>
+                    </ListItem>)
+                    : <ListItem key = {random()}> Anonyme </ListItem>
+                    )))
                   }
-                  for (let i = 0; i < tableauVerif.length - 1; i++) {
-                    chaine = chaine + r.composer[i] + ', '
-                  }
-                  chaine = chaine + r.composer[r.composer.length - 1]
-                  return chaine
-                } else return 'Anonyme'
+                </List>
+              return composant
               }
             },
-            {
-              render: (r) => {
-                if (r.performer[0]) {
-                  let chaine = ''
-                  for (let i = 0; i < r.performer.length - 1; i++) {
-                    chaine = chaine + r.performer[i] + ', '
-                  }
-                  chaine = chaine + r.performer[r.performer.length - 1]
-                  return chaine
-                } else return 'Anonyme'
-              },
+        {
+          render: (rowdata) => {
+            const performers = interpretes(rowdata)
+            const composant = <List>
+              { 
+              (Object.keys(performers).map((p) =>(
+                performers[p] !== 'null'
+                ?(<ListItem key = {p}>
+                  <Link key={p} href={'/musician/' + p.slice(-36)}>{performers[p]}</Link>
+                </ListItem>)
+                : <ListItem key = {random()}> Anonyme </ListItem>
+                )))
+              }
+            </List>
+          return composant
+          },
               sorting: false,
               title: 'Interprètes'
             }
           ]}
           data={data}
           onRowClick={(evt, selectedRow) => {
-            const workId = selectedRow.work.slice(-36)
-            history.push('/work/' + workId)
-          }}
+          const workId = selectedRow.work.slice(-36)
+          history.push('/work/' + workId)
+        }}
           options={{
-            filtering: true,
-            pageSize: data.length < 10 ? data.length : 10,
-            pageSizeOptions: data.length < 10 ? [data.length] : [10, 30],
-            cellStyle: { paddingBottom: '0.3em', paddingTop: '0.3em' },
-            headerStyle: { paddingBottom: '0.3em', paddingTop: '0.3em' }
-          }}
+          filtering: true,
+          pageSize: data.length < 10 ? data.length : 10,
+          pageSizeOptions: data.length < 10 ? [data.length] : [10, 30],
+          cellStyle: { paddingBottom: '0.3em', paddingTop: '0.3em' },
+          headerStyle: { paddingBottom: '0.3em', paddingTop: '0.3em' }
+        }}
         ></MaterialTable>
-      </Container>
+      </Container >
     )
   }
 }
@@ -125,18 +129,40 @@ function computeData(res) {
   const data = lodash.groupBy(res, 'music_event')
 
   for (const work in data) {
+
+    const performers_given_name =
+      (data[work].map((item) =>
+        item.performer_given_name ? item.performer_given_name : null))
+
+    const performers_surname =
+      (data[work].map((item) =>
+        item.performer_surname ? item.performer_surname : null))
+
     const performers = data[work].map((item) =>
-      item.performer_surname
-        ? (item.performer_given_name ? item.performer_given_name + ' ' : '') +
-          item.performer_surname
+      item.performer
+        ? item.performer
         : null
     )
-    const composers = data[work].map((item) =>
+
+    const composers_given_name = data[work].map((item) =>
+      item.composer_given_name
+        ? item.composer_given_name
+        : null)
+
+    const composers_surname = data[work].map((item) =>
       item.composer_surname
-        ? (item.composer_given_name ? item.composer_given_name + ' ' : '') + item.composer_surname
-        : null
-    )
+        ? item.composer_surname
+        : null)
+
+    const composers = data[work].map((item) =>
+      item.composer
+        ? item.composer
+        : null)
+    data[work][0].performer_given_name = performers_given_name
+    data[work][0].performer_surname = performers_surname
     data[work][0].performer = performers
+    data[work][0].composer_given_name = composers_given_name
+    data[work][0].composer_surname = composers_surname
     data[work][0].composer = composers
     newData.push(data[work][0])
   }
@@ -157,5 +183,40 @@ const useStyles = makeStyles((theme) => ({
     }
   }
 }))
+function compositeurs(r) {
+  let tableauVerif = []
+  let compositeurs = {}
+  if (r.composer.length > 0) {
+    for (let i = 0; i < r.composer.length; i++) {
+      if (!tableauVerif.includes(r.composer[i])) {
+        tableauVerif.push(r.composer[i])
+      }
+    }
+    for (let i = 0; i < tableauVerif.length; i++) {
+      compositeurs[r.composer[i]] = ((r.composer_given_name[i] ? r.composer_given_name[i] + ' ' : '') + r.composer_surname[i])
+    }
+  }
+  else compositeurs = null
+
+  return compositeurs
+}
+
+function interpretes(r) {
+  let tableauVerif = []
+  let interpretes = {}
+  if (r.performer.length > 0 ) {
+    for (let i = 0; i < r.performer.length; i++) {
+      if (!tableauVerif.includes(r.performer[i])) {
+        tableauVerif.push(r.performer[i])
+      }
+    }
+    for (let i = 0; i < tableauVerif.length; i++) {
+      interpretes[r.performer[i]] = ((r.performer_given_name[i] ? r.performer_given_name[i] + ' ' : '') + r.performer_surname[i])
+    }
+  }
+  else interpretes = null
+  return interpretes
+}
+
 
 export default withRouter(Program)

@@ -30,7 +30,7 @@ function Work({ history, match }) {
     const compositeurs = <List> 
       {(data.composers
       ? data.composers.map((c) => (
-      <ListItem> <Link key={c.composer} href={'/musician/' + c.composer.slice(-36)}> {(c.composer_given_name ? c.composer_given_name : '') + ' ' + c.composer_surname} </Link> </ListItem>
+      <ListItem key={c.composer}> <Link key={c.composer} href={'/musician/' + c.composer.slice(-36)}> {(c.composer_given_name ? c.composer_given_name : '') + ' ' + c.composer_surname} </Link> </ListItem>
       ))
       : <ListItem> 'Compositeur Anonyme') </ListItem>)
     }

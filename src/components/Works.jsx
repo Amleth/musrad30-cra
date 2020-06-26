@@ -1,5 +1,4 @@
-import lodash from 'lodash'
-import { Container } from '@material-ui/core'
+import { Container, List, ListItem, Link } from '@material-ui/core'
 import { CircularProgress } from '@material-ui/core'
 import MaterialTable from 'material-table'
 import React from 'react'
@@ -11,7 +10,7 @@ function Works({ history }) {
 
   async function fetchData() {
     const res = await fetch('http://data-iremus.huma-num.fr/api/musrad30/works/')
-    res.json().then((res) => setData(computeData(res)))
+    res.json().then((res) => setData(res.filter((w) => w.name || w.composers)))
   }
 
   useEffect(() => {
@@ -28,7 +27,7 @@ function Works({ history }) {
       columns={[
         {
           title: 'Nom',
-          field: 'work_name',
+          field: 'name',
           customSort: (a, b) => {
             if (!a.work_name && !b.work_name) return 0
             if (!a.work_name) return 1
@@ -38,19 +37,27 @@ function Works({ history }) {
         },
         {
           title: 'Compositeur•rice•s',
-          field: 'composer',
+          field: 'composers',
+          render: (rowdata) =>{
+            if (rowdata.composers){
+              const composers = rowdata.composers
+              console.log(composers)
+              const composant = <List>
+                  { 
+                  (Object.keys(composers).map((c) =>(
+                    <ListItem key = {c}>
+                      <Link key={composers[c].id} href={'/musician/' + composers[c].id.slice(-36)}>{(composers[c].given_name ? composers[c].given_name + ' ' : '') + composers[c].surname}</Link>
+                    </ListItem>)
+                    ))
+                  }
+                </List>
+              return composant
+            } else {
+              return <List> <ListItem key = {Math.random()}>Anonyme</ListItem></List>
+            } 
+          },
           filtering: true,
           sorting: false,
-          render: (r) => {
-            if (r.composer[0]) {
-              let chaine = ''
-              for (let i = 0; i < r.composer.length - 1; i++) {
-                chaine = chaine + r.composer[i] + ', '
-              }
-              chaine = chaine + r.composer[r.composer.length - 1]
-              return chaine
-            } else return 'Anonyme'
-          }
         }
       ]}
       options={{
@@ -63,28 +70,11 @@ function Works({ history }) {
       }}
       data={data}
       onRowClick={(evt, selectedRow) => {
-        const workId = selectedRow.work.slice(-36)
+        const workId = selectedRow.id.slice(-36)
         history.push('/work/' + workId)
       }}
     ></MaterialTable>
   )
-}
-
-function computeData(res) {
-  res = res.filter((w) => w.work_name || w.composer)
-  let newData = []
-  const data = lodash.groupBy(res, 'work')
-  for (const work in data) {
-    const composers = data[work].map((item) =>
-      item.composer_surname
-        ? (item.composer_given_name ? item.composer_given_name + ' ' : '') + item.composer_surname
-        : null
-    )
-    data[work][0].composer = composers
-    newData.push(data[work][0])
-  }
-
-  return newData
 }
 
 export default withRouter(Works)

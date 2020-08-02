@@ -1,3 +1,4 @@
+import { Avatar } from '@material-ui/core'
 import { Box } from '@material-ui/core'
 import { Container } from '@material-ui/core'
 import { Grid } from '@material-ui/core'
@@ -5,7 +6,7 @@ import { List } from '@material-ui/core'
 import { ListItem } from '@material-ui/core'
 import { ListItemText } from '@material-ui/core'
 import { ListItemAvatar } from '@material-ui/core'
-import { Avatar } from '@material-ui/core'
+import { TextField } from '@material-ui/core'
 import { Typography } from '@material-ui/core'
 import { Search as SearchIcon } from '@material-ui/icons'
 import { ViewList as ViewListIcon } from '@material-ui/icons'
@@ -26,6 +27,15 @@ const useStyles = makeStyles((theme) => ({
       marginBottom: theme.spacing(2),
       padding: 0
     }
+  },
+  référence: {
+    // borderBottom: '1px solid gray',
+    // borderLeft: 'none',
+    // borderRight: 'none',
+    // borderTop: '1px solid gray',
+    margin: 'auto',
+    textAlign: 'justify',
+    width: '50%'
   }
 }))
 
@@ -83,6 +93,16 @@ function Home() {
           </List>
         </Grid>
       </Grid>
+      <Box pt={10} pb={10}>
+        <Typography variant='h5' component='h2' align='center'>
+          Citer cette base
+        </Typography>
+        <Typography color='textSecondary' className={classes.référence}>
+          Bennet, C (2020, Juillet). Musicien·ne·s radiodiffusé·e·s depuis les années trente [Base
+          de données]. Consultée le {new Date().toLocaleDateString('fr-FR')}. Institut de Recherche
+          en Musicologie — IReMus UMR 8223 CNRS. http://data-iremus.huma-num.fr/musrad30/
+        </Typography>
+      </Box>
     </Container>
   )
 }

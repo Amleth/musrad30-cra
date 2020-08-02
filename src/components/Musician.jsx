@@ -1,8 +1,10 @@
-import { CircularProgress, Container, Link, Paper } from '@material-ui/core'
+import { CircularProgress, Container, Link as LinkM, Paper } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
+import { parseISO } from 'date-fns'
 import MaterialTable from 'material-table'
 import React, { useEffect, useState } from 'react'
 import { withRouter } from 'react-router'
+import { Link } from 'react-router-dom'
 import { capitalize, makeTextField } from '../common'
 
 function Musician({ history, match }) {
@@ -12,18 +14,29 @@ function Musician({ history, match }) {
   const [musicianData, setMusicianData] = useState([])
   const [composedWorks, setComposedWorks] = useState([])
   const [performedWorks, setPerformedWorks] = useState([])
+  const [composerEvents, setComposerEvents] = useState([])
 
   useEffect(() => {
     async function fetchData() {
-      const res = await fetch('http://data-iremus.huma-num.fr/api/musrad30/musician/' + id)
+      const res = await fetch(
+        process.env.REACT_APP_SHERLOCK_SERVICE_BASE_URL + 'musrad30/musician/' + id
+      )
       res.json().then((res) => {
         setMusicianData(res)
-        if (res.hasOwnProperty('composed_works')) {
-          setComposedWorks(computeComposedWorks(res.composed_works))
-        }
-        if (res.hasOwnProperty('performed_works')) {
-          setPerformedWorks(res.performed_works)
-        }
+        setComposedWorks(
+          computeComposedWorks(res.hasOwnProperty('composed_works') ? res.composed_works : [])
+        )
+        setPerformedWorks(res.hasOwnProperty('performed_works') ? res.performed_works : [])
+        setComposerEvents(
+          res.composer_events
+            ? res.composer_events.map((e) => ({
+                ...e,
+                date: e['broadcast_super_event_startDate']
+                  ? parseISO(e['broadcast_super_event_startDate'].split('^^')[0])
+                  : null
+              }))
+            : []
+        )
       })
     }
     fetchData()
@@ -74,15 +87,15 @@ function Musician({ history, match }) {
     return (
       <Container maxWidth='md'>
         <div className={classes.root}>
-          <form className={classes.form} noValidate autoComplete='off'>
+          <div className={classes.form}>
             {makeTextField('Nom', musicianData.surname)}
             {makeTextField('Prénom', musicianData.given_name)}
             {makeTextField('Dates', datesMusicien)}
             {makeTextField('Statut', statuts)}
             {makeTextField('Nationalité', musicianData.nationality_label)}
             {makeTextField('Style', musicianData.style_label)}
-            {makeTextField('Description', description, true, true)}
-          </form>
+            {description && makeTextField('Description', description, true, true)}
+          </div>
           <Paper elevation={3} style={{ maxWidth: PICTURE_MAX_WIDTH }}>
             <img
               style={{
@@ -97,13 +110,14 @@ function Musician({ history, match }) {
               }
             />
             {musicianData.wikipedia && (
-              <Link
+              <LinkM
+                className='link'
                 style={{ display: 'block', padding: '1em', wordWrap: 'break-word' }}
                 href={musicianData.wikipedia}
                 target='_blank'
               >
                 {decodeURI(musicianData.wikipedia)}
-              </Link>
+              </LinkM>
             )}
           </Paper>
         </div>
@@ -113,7 +127,8 @@ function Musician({ history, match }) {
             title='Œuvres composées'
             columns={[{ title: 'Titre', field: 'work_name', defaultSort: 'asc' }]}
             data={composedWorks}
-            onRowClick={(evt, selectedRow) => {
+            onRowClick={(e, selectedRow) => {
+              if (e.target.nodeName === 'A') return
               const workId = selectedRow.work.slice(-36)
               history.push('/work/' + workId)
             }}
@@ -160,17 +175,21 @@ function Musician({ history, match }) {
               },
               {
                 field: 'composer_surname',
-                render: (row) => {
-                  return row.composer_surname
-                    ? (row.composer_given_name ? row.composer_given_name + ' ' : '') +
-                        row.composer_surname
-                    : 'Anonyme'
-                },
+                render: (row) =>
+                  row.composer ? (
+                    <Link className='link' to={'/musician/' + row.composer.slice(-36)}>
+                      {(row.composer_given_name ? row.composer_given_name + ' ' : '') +
+                        row.composer_surname}
+                    </Link>
+                  ) : (
+                    'Anonyme'
+                  ),
                 title: 'Compositeur•rice'
               }
             ]}
             data={performedWorks}
-            onRowClick={(evt, selectedRow) => {
+            onRowClick={(e, selectedRow) => {
+              if (e.target.nodeName === 'A') return
               const workId = selectedRow.work.slice(-36)
               history.push('/work/' + workId)
             }}
@@ -181,6 +200,56 @@ function Musician({ history, match }) {
               sorting: true,
               cellStyle: { paddingBottom: '0.3em', paddingTop: '0.3em' },
               headerStyle: { paddingBottom: '0.3em', paddingTop: '0.3em' }
+            }}
+          />
+        )}
+        <br />
+        {composerEvents.length > 0 && (
+          <MaterialTable
+            title="Occurences d'œuvres"
+            columns={[
+              {
+                title: 'Œuvre',
+                field: 'work_name',
+                render: (row) => (
+                  <Link className='link' to={'/work/' + row.work.slice(-36)}>
+                    {row.work_name}
+                  </Link>
+                )
+              },
+              { title: 'Radio', field: 'broadcast_super_event_publishedOn_name' },
+              {
+                field: 'date',
+                filtering: true,
+                sorting: true,
+                title: 'Date',
+                render: (rowData) => (rowData['date'] ? rowData['date'].toLocaleDateString() : '')
+              },
+              {
+                title: 'Type',
+                field: 'broadcast_super_event_type_label',
+                render: (row) => capitalize(row.broadcast_super_event_type_label)
+              },
+              { title: 'Titre', field: 'broadcast_super_event_title_label' },
+              {
+                title: 'Format',
+                field: 'broadcast_super_event_format_label',
+                render: (row) => capitalize(row.broadcast_super_event_format_label)
+              }
+            ]}
+            options={{
+              pageSize: 20,
+              pageSizeOptions: [20, 100],
+              filtering: true,
+              sorting: true,
+              cellStyle: { paddingBottom: '0.3em', paddingTop: '0.3em' },
+              headerStyle: { paddingBottom: '0.3em', paddingTop: '0.3em' }
+            }}
+            data={composerEvents}
+            onRowClick={(e, selectedRow) => {
+              if (e.target.nodeName === 'A') return
+              const progId = selectedRow.broadcast_super_event.slice(-36)
+              history.push('/super_event/' + progId)
             }}
           />
         )}

@@ -1,0 +1,10 @@
+a.link {
+  color: #1693a5;
+  text-decoration: none;
+  transition: color ease-in-out 0.3s;
+}
+
+a.link:hover {
+  color: turquoise;
+  transition: color ease-in-out 0s;
+}

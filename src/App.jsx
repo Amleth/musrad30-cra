@@ -13,6 +13,8 @@ import Programs from './components/Programs'
 import Work from './components/Work'
 import Works from './components/Works'
 
+import './style.css'
+
 const useStyles = makeStyles({
   bar: {
     flexWrap: 'wrap',

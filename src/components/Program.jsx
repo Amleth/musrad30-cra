@@ -1,9 +1,10 @@
-import lodash, { random } from 'lodash'
-import { Container, Link, ListItem, List } from '@material-ui/core'
+import lodash from 'lodash'
+import { Container } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import MaterialTable from 'material-table'
 import React, { useEffect, useState } from 'react'
 import { withRouter } from 'react-router'
+import { Link } from 'react-router-dom'
 import { makeTextField } from '../common'
 
 function Program({ history, match }) {
@@ -14,7 +15,9 @@ function Program({ history, match }) {
 
   useEffect(() => {
     async function fetchData() {
-      const res = await fetch('http://data-iremus.huma-num.fr/api/musrad30/super_event/' + id)
+      const res = await fetch(
+        process.env.REACT_APP_SHERLOCK_SERVICE_BASE_URL + 'musrad30/super_event/' + id
+      )
       res.json().then((res) => {
         setData(computeData(res))
       })
@@ -46,80 +49,87 @@ function Program({ history, match }) {
           {makeTextField(
             'Date de diffusion',
             data[0].jour_debut_diffusion +
-            ' ' +
-            (!data[0].start_date
-              ? ''
-              : data[0].start_date.slice(8, 10) +
-              '/' +
-              data[0].start_date.slice(5, 7) +
-              '/' +
-              data[0].start_date.slice(0, 4))
+              ' ' +
+              (!data[0].start_date
+                ? ''
+                : data[0].start_date.slice(8, 10) +
+                  '/' +
+                  data[0].start_date.slice(5, 7) +
+                  '/' +
+                  data[0].start_date.slice(0, 4))
           )}
           {makeTextField('Plage horaire', plageHoraire)}
           {makeTextField('Durée', duree)}
           {makeTextField('Description', description, true, true)}
         </form>
+        <br />
         <MaterialTable
           title='Plages diffusées'
           columns={[
             {
               title: 'Titre',
               field: 'work_name',
-              render: (rowdata) => rowdata.work_name || 'Sans titre'
+              render: (row) =>
+                row.work_name ? (
+                  <Link className='link' to={'/work/' + row.work.slice(-36)}>
+                    {row.work_name}
+                  </Link>
+                ) : (
+                  'Sans titre'
+                )
             },
             {
               title: 'Compositeurs',
               sorting: false,
               render: (rowdata) => {
                 const composers = compositeurs(rowdata)
-                const composant = <List>
-                  { 
-                  (Object.keys(composers).map((c) =>(
-                    composers[c] !== 'null'
-                    ?(<ListItem key = {c}>
-                      <Link key={c} href={'/musician/' + c.slice(-36)}>{composers[c]}</Link>
-                    </ListItem>)
-                    : <ListItem key = {random()}> Anonyme </ListItem>
-                    )))
-                  }
-                </List>
-              return composant
+                return Object.keys(composers)
+                  .map((c) =>
+                    composers[c] !== 'null' ? (
+                      <Link className='link' key={c} to={'/musician/' + c.slice(-36)}>
+                        {composers[c]}
+                      </Link>
+                    ) : (
+                      'Anonyme'
+                    )
+                  )
+                  .reduce((prev, curr) => [prev, ', ', curr])
               }
             },
-        {
-          render: (rowdata) => {
-            const performers = interpretes(rowdata)
-            const composant = <List>
-              { 
-              (Object.keys(performers).map((p) =>(
-                performers[p] !== 'null'
-                ?(<ListItem key = {p}>
-                  <Link key={p} href={'/musician/' + p.slice(-36)}>{performers[p]}</Link>
-                </ListItem>)
-                : <ListItem key = {random()}> Anonyme </ListItem>
-                )))
-              }
-            </List>
-          return composant
-          },
+            {
+              render: (rowdata) => {
+                const performers = interpretes(rowdata)
+                return Object.keys(performers)
+                  .map((p) =>
+                    performers[p] !== 'null' ? (
+                      <Link className='link' key={p} to={'/musician/' + p.slice(-36)}>
+                        {performers[p]}
+                      </Link>
+                    ) : (
+                      'Anonyme'
+                    )
+                  )
+                  .reduce((prev, curr) => [prev, ', ', curr])
+              },
               sorting: false,
               title: 'Interprètes'
             }
           ]}
           data={data}
-          onRowClick={(evt, selectedRow) => {
-          const workId = selectedRow.work.slice(-36)
-          history.push('/work/' + workId)
-        }}
+          onRowClick={(e, selectedRow) => {
+            if (e.target.nodeName === 'A') return
+            const workId = selectedRow.work.slice(-36)
+            history.push('/work/' + workId)
+          }}
           options={{
-          filtering: true,
-          pageSize: data.length < 10 ? data.length : 10,
-          pageSizeOptions: data.length < 10 ? [data.length] : [10, 30],
-          cellStyle: { paddingBottom: '0.3em', paddingTop: '0.3em' },
-          headerStyle: { paddingBottom: '0.3em', paddingTop: '0.3em' }
-        }}
-        ></MaterialTable>
-      </Container >
+            filtering: true,
+            pageSize: data.length < 10 ? data.length : 10,
+            pageSizeOptions: data.length < 10 ? [data.length] : [10, 30],
+            cellStyle: { paddingBottom: '0.3em', paddingTop: '0.3em' },
+            headerStyle: { paddingBottom: '0.3em', paddingTop: '0.3em' }
+          }}
+        />
+      </Container>
     )
   }
 }
@@ -129,35 +139,25 @@ function computeData(res) {
   const data = lodash.groupBy(res, 'music_event')
 
   for (const work in data) {
-
-    const performers_given_name =
-      (data[work].map((item) =>
-        item.performer_given_name ? item.performer_given_name : null))
-
-    const performers_surname =
-      (data[work].map((item) =>
-        item.performer_surname ? item.performer_surname : null))
-
-    const performers = data[work].map((item) =>
-      item.performer
-        ? item.performer
-        : null
+    const performers_given_name = data[work].map((item) =>
+      item.performer_given_name ? item.performer_given_name : null
     )
 
+    const performers_surname = data[work].map((item) =>
+      item.performer_surname ? item.performer_surname : null
+    )
+
+    const performers = data[work].map((item) => (item.performer ? item.performer : null))
+
     const composers_given_name = data[work].map((item) =>
-      item.composer_given_name
-        ? item.composer_given_name
-        : null)
+      item.composer_given_name ? item.composer_given_name : null
+    )
 
     const composers_surname = data[work].map((item) =>
-      item.composer_surname
-        ? item.composer_surname
-        : null)
+      item.composer_surname ? item.composer_surname : null
+    )
 
-    const composers = data[work].map((item) =>
-      item.composer
-        ? item.composer
-        : null)
+    const composers = data[work].map((item) => (item.composer ? item.composer : null))
     data[work][0].performer_given_name = performers_given_name
     data[work][0].performer_surname = performers_surname
     data[work][0].performer = performers
@@ -193,10 +193,10 @@ function compositeurs(r) {
       }
     }
     for (let i = 0; i < tableauVerif.length; i++) {
-      compositeurs[r.composer[i]] = ((r.composer_given_name[i] ? r.composer_given_name[i] + ' ' : '') + r.composer_surname[i])
+      compositeurs[r.composer[i]] =
+        (r.composer_given_name[i] ? r.composer_given_name[i] + ' ' : '') + r.composer_surname[i]
     }
-  }
-  else compositeurs = null
+  } else compositeurs = null
 
   return compositeurs
 }
@@ -204,19 +204,18 @@ function compositeurs(r) {
 function interpretes(r) {
   let tableauVerif = []
   let interpretes = {}
-  if (r.performer.length > 0 ) {
+  if (r.performer.length > 0) {
     for (let i = 0; i < r.performer.length; i++) {
       if (!tableauVerif.includes(r.performer[i])) {
         tableauVerif.push(r.performer[i])
       }
     }
     for (let i = 0; i < tableauVerif.length; i++) {
-      interpretes[r.performer[i]] = ((r.performer_given_name[i] ? r.performer_given_name[i] + ' ' : '') + r.performer_surname[i])
+      interpretes[r.performer[i]] =
+        (r.performer_given_name[i] ? r.performer_given_name[i] + ' ' : '') + r.performer_surname[i]
     }
-  }
-  else interpretes = null
+  } else interpretes = null
   return interpretes
 }
-
 
 export default withRouter(Program)

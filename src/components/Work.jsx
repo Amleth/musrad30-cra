@@ -1,6 +1,7 @@
-import { CircularProgress, Container, Typography, Link, List, ListItem } from '@material-ui/core'
+import { CircularProgress, Container, Typography } from '@material-ui/core'
 import MaterialTable from 'material-table'
 import React, { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { withRouter } from 'react-router'
 import { capitalize } from '../common'
 
@@ -11,7 +12,9 @@ function Work({ history, match }) {
 
   useEffect(() => {
     async function fetchData() {
-      const res = await fetch('http://data-iremus.huma-num.fr/api/musrad30/work/' + id)
+      const res = await fetch(
+        process.env.REACT_APP_SHERLOCK_SERVICE_BASE_URL + 'musrad30/work/' + id
+      )
       res.json().then((res) => {
         setData(res)
       })
@@ -26,25 +29,24 @@ function Work({ history, match }) {
       </Container>
     )
   } else {
-
-    const compositeurs = <List> 
-      {(data.composers
-      ? data.composers.map((c) => (
-      <ListItem> <Link key={c.composer} href={'/musician/' + c.composer.slice(-36)}> {(c.composer_given_name ? c.composer_given_name : '') + ' ' + c.composer_surname} </Link> </ListItem>
-      ))
-      : <ListItem> 'Compositeur Anonyme') </ListItem>)
-    }
-       </List>
-
     return (
-
       <Container maxWidth='md'>
         <Typography component='h1' variant='h4'>
           {data.work_name || 'Œuvre non titrée'}
         </Typography>
-        <Typography component='h2' variant='h5'>
-          {compositeurs}
-        </Typography>
+        {data.composers && data.composers.length > 0 && (
+          <>
+            <span>Composée par&nbsp;: </span>
+            {data.composers
+              .map((c) => (
+                <Link className='link' key={c.composer} to={'/musician/' + c.composer.slice(-36)}>
+                  {(c.composer_given_name ? c.composer_given_name : '') + ' ' + c.composer_surname}
+                </Link>
+              ))
+              .reduce((prev, curr) => [prev, ', ', curr])}
+          </>
+        )}
+        <br />
         <br />
         <MaterialTable
           title='Diffusions'
@@ -72,7 +74,10 @@ function Work({ history, match }) {
             {
               title: 'Plage horaire',
               type: 'datetime',
-              render: (row) => row.super_event_start_date.split('T')[1].split(':00+')[0] + ' — ' + row.super_event_end_date.split('T')[1].split(':00+')[0]
+              render: (row) =>
+                row.super_event_start_date.split('T')[1].split(':00+')[0] +
+                ' — ' +
+                row.super_event_end_date.split('T')[1].split(':00+')[0]
             },
             {
               title: 'Programme',
@@ -94,20 +99,24 @@ function Work({ history, match }) {
               field: 'performers',
               render: (r) => {
                 if (r.performers) {
-                  // let chaine = ''
-                  // for (let i = 0; i < r.performers.length - 1; i++) {
-                  //   chaine = chaine + r.performers[i].performer_surname + ', '
-                  // }
-                  // chaine = chaine + r.performers[r.performers.length - 1].performer_surname
-                  // return chaine
-                  return r.performers.map((p => (<Link key={p.performer} href={'/musician/' + p.performer.slice(-36)}>{p.performer_surname + '\n'}</Link>)))
-                } else
-                  return 'Anonyme'
+                  return r.performers
+                    .map((p) => (
+                      <Link
+                        className='link'
+                        key={p.performer}
+                        to={'/musician/' + p.performer.slice(-36)}
+                      >
+                        {p.performer_surname}
+                      </Link>
+                    ))
+                    .reduce((prev, curr) => [prev, ', ', curr])
+                } else return 'Anonyme'
               }
             }
           ]}
           data={data.events}
-          onRowClick={(evt, selectedRow) => {
+          onRowClick={(e, selectedRow) => {
+            if (e.target.nodeName === 'A') return
             const progId = selectedRow.super_event.slice(-36)
             history.push('/super_event/' + progId)
           }}
@@ -122,39 +131,5 @@ function Work({ history, match }) {
     )
   }
 }
-
-// function computeData(res) {
-//   let newData = []
-
-//   const data = lodash.groupBy(res, 'sub_event')
-
-//   console.log(data)
-
-//   for (let sub_event in data) {
-//     console.log(data[sub_event][9])
-//     const performers = data[sub_event][9].map((item) =>
-//       item.performers.performer_surname
-//         ? (item.performers.performer_given_name ? item.performers.performer_given_name + ' ' : '') +
-//           item.performers.performer_surname
-//         : null
-//     )
-//     console.log('performers :' + performers)
-
-//     const composers = data[sub_event].map((item) =>
-//       item.composer_surname
-//         ? (item.composer_given_name ? item.composer_given_name + ' ' : '') + item.composer_surname
-//         : null
-//     )
-//     // const distinctPerformers = [...new Set(performers)]
-//     const distinctComposers = [...new Set(composers)]
-//     // data[sub_event][0].performer = distinctPerformers  
-//     data[sub_event][0].composer = distinctComposers
-
-//     newData.push(data[sub_event][0])
-
-//   }
-
-//   return newData
-// }
 
 export default withRouter(Work)

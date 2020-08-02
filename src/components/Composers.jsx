@@ -1,9 +1,14 @@
-import { Container } from '@material-ui/core'
-import { CircularProgress, FormControl, InputLabel, MenuItem, Select } from '@material-ui/core'
+import {
+  CircularProgress,
+  Container,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select
+} from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import MaterialTable from 'material-table'
-import React from 'react'
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { withRouter } from 'react-router'
 
 const useStyles = makeStyles((theme) => ({
@@ -22,8 +27,16 @@ function Composers({ history }) {
   const [style, setStyle] = useState('')
 
   async function fetchData() {
-    const res = await fetch('http://data-iremus.huma-num.fr/api/musrad30/composers/')
-    res.json().then((res) => setData(res))
+    const res = await fetch(process.env.REACT_APP_SHERLOCK_SERVICE_BASE_URL + 'musrad30/composers/')
+    res.json().then((res) =>
+      setData(
+        res.map((o) => ({
+          ...o,
+          broadcast_events: parseInt(o['broadcast_events'].split('^')[0]),
+          works: parseInt(o['works'].split('^')[0])
+        }))
+      )
+    )
   }
 
   const handleStyleChange = (event) => {
@@ -65,14 +78,23 @@ function Composers({ history }) {
           ))}
         </Select>
       </FormControl>
-      
+
       <MaterialTable
         title='Liste des compositeur•rice•s'
         columns={[
-          { title: 'Nom', field: 'surname', defaultSort: "asc" },
+          { title: 'Nom', field: 'surname', defaultSort: 'asc' },
           { title: 'Prénom', field: 'given_name' },
           { title: 'Nationalité', field: 'nationality_label' },
-          { title: 'Style', field: 'style_label', defaultFilter: style }
+          { title: 'Style', field: 'style_label', defaultFilter: style },
+          {
+            title: 'Œuvres composées',
+            field: 'works'
+          },
+          {
+            title: "Occurences d'œuvres",
+            field: 'broadcast_events'
+          },
+          { title: 'Description', field: 'description' }
         ]}
         options={{
           pageSize: 20,
@@ -83,7 +105,8 @@ function Composers({ history }) {
           headerStyle: { paddingBottom: '0.3em', paddingTop: '0.3em' }
         }}
         data={data}
-        onRowClick={(evt, selectedRow) => {
+        onRowClick={(e, selectedRow) => {
+          if (e.target.nodeName === 'A') return
           const composerId = selectedRow.composer.slice(-36)
           history.push('/musician/' + composerId)
         }}

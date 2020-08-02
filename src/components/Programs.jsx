@@ -25,9 +25,10 @@ function Programs({ history }) {
   const [titre, setTitre] = useState('')
   const [format, setFormat] = useState('')
 
-
   async function fetchData() {
-    const res = await fetch('http://data-iremus.huma-num.fr/api/musrad30/super_events')
+    const res = await fetch(
+      process.env.REACT_APP_SHERLOCK_SERVICE_BASE_URL + 'musrad30/super_events'
+    )
     res.json().then((res) => {
       res = res.map((p) => ({
         ...p,
@@ -82,126 +83,136 @@ function Programs({ history }) {
       <CircularProgress />
     </Container>
   ) : (
-      <>
-        <FormControl className={classes.formControl}>
-          <InputLabel id='type-select-label'>Liste des types</InputLabel>
-          <Select
-            labelId='type-select-label'
-            id='type-select'
-            onChange={handleStyleChange}
-            value={type}
-          >
-            <MenuItem value=''>
-              <em>Pas de filtre</em>
+    <>
+      <FormControl className={classes.formControl}>
+        <InputLabel id='type-select-label'>Liste des types</InputLabel>
+        <Select
+          labelId='type-select-label'
+          id='type-select'
+          onChange={handleStyleChange}
+          value={type}
+        >
+          <MenuItem value=''>
+            <em>Pas de filtre</em>
+          </MenuItem>
+          {typesProg.map((s) => (
+            <MenuItem key={s} value={s}>
+              {s}
             </MenuItem>
-            {typesProg.map((s) => (
-              <MenuItem key={s} value={s}>
-                {s}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+          ))}
+        </Select>
+      </FormControl>
 
-        <FormControl className={classes.formControl}>
-          <InputLabel id='titre-select-label'>Liste des titres</InputLabel>
-          <Select
-            labelId='titre-select-label'
-            id='titre-select'
-            onChange={handleTitreChange}
-            value={titre}
-          >
-            <MenuItem value=''>
-              <em>Pas de filtre</em>
+      <FormControl className={classes.formControl}>
+        <InputLabel id='titre-select-label'>Liste des titres</InputLabel>
+        <Select
+          labelId='titre-select-label'
+          id='titre-select'
+          onChange={handleTitreChange}
+          value={titre}
+        >
+          <MenuItem value=''>
+            <em>Pas de filtre</em>
+          </MenuItem>
+          {titresProg.map((s) => (
+            <MenuItem key={s} value={s}>
+              {s}
             </MenuItem>
-            {titresProg.map((s) => (
-              <MenuItem key={s} value={s}>
-                {s}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+          ))}
+        </Select>
+      </FormControl>
 
-        <FormControl className={classes.formControl}>
-          <InputLabel id='format-select-label'>Liste des formats</InputLabel>
-          <Select
-            labelId='format-select-label'
-            id='format-select'
-            onChange={handleFormatChange}
-            value={format}
-          >
-            <MenuItem value=''>
-              <em>Pas de filtre</em>
+      <FormControl className={classes.formControl}>
+        <InputLabel id='format-select-label'>Liste des formats</InputLabel>
+        <Select
+          labelId='format-select-label'
+          id='format-select'
+          onChange={handleFormatChange}
+          value={format}
+        >
+          <MenuItem value=''>
+            <em>Pas de filtre</em>
+          </MenuItem>
+          {formatProg.map((s) => (
+            <MenuItem key={s} value={s}>
+              {s}
             </MenuItem>
-            {formatProg.map((s) => (
-              <MenuItem key={s} value={s}>
-                {s}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+          ))}
+        </Select>
+      </FormControl>
 
-        <MaterialTable
-          title='Liste des programmes'
-          columns={[
-            { title: 'Radio', field: 'station_label' },
-            {
-              field: 'date',
-              filtering: true,
-              sorting: true,
-              title: 'Date',
-              render: (rowData) => (rowData['date'] ? rowData['date'].toLocaleDateString() : '')
-            },
-            {
-              title: 'Plage horaire',
-              sorting: false,
-              render: (rowData) => {
-                if (!rowData.start_date || !rowData.end_date) return '?'
-                let heuredebut = rowData.start_date.split('T')[1]
-                let heurefin = rowData.end_date.split('T')[1]
-                return heuredebut.split(':00+')[0] + ' — ' + heurefin.split(':00+')[0]
-              }
-            },
-            // { title : "Durée", type : 'time', render: rowData => {
-            //   let duree = rowData.duration.split('T')[1]
-            //   let heures = duree.split('H')[0]
-            //   let minutes = duree.split('H')[1]
-            //   minutes = minutes.split('M')[0]
-            //   return (heures + 'h' + minutes +'min.')
-            // }}, a mettre dans super_event/id !!
-
-            { title: 'Type', field: 'type_label', render: (row) => capitalize(row.type_label), defaultFilter: type },
-            { title: 'Titre', field: 'title_label', defaultFilter: titre },
-            { title: 'Format', field: 'format_label', render: (row) => capitalize(row.format_label), defaultFilter: format },
-            {
-              title: 'Compositeur•rice•s mentionné•e•s',
-              field: 'composers_count'
-            },
-            {
-              title: 'Interprètes mentionné•e•s',
-              field: 'performers_count'
-            },
-            {
-              title: 'Œuvres mentionnées',
-              field: 'works_count'
-            }
-          ]}
-          options={{
-            pageSize: 20,
-            pageSizeOptions: [20, 100],
+      <MaterialTable
+        title='Liste des programmes'
+        columns={[
+          { title: 'Radio', field: 'station_label' },
+          {
+            field: 'date',
             filtering: true,
             sorting: true,
-            cellStyle: { paddingBottom: '0.3em', paddingTop: '0.3em' },
-            headerStyle: { paddingBottom: '0.3em', paddingTop: '0.3em' }
-          }}
-          data={data}
-          onRowClick={(evt, selectedRow) => {
-            const progId = selectedRow.super_event.slice(-36)
-            history.push('/super_event/' + progId)
-          }}
-        ></MaterialTable>
-      </>
-    )
-}
+            title: 'Date',
+            render: (rowData) => (rowData['date'] ? rowData['date'].toLocaleDateString() : '')
+          },
+          {
+            title: 'Plage horaire',
+            sorting: false,
+            render: (rowData) => {
+              if (!rowData.start_date || !rowData.end_date) return '?'
+              let heuredebut = rowData.start_date.split('T')[1]
+              let heurefin = rowData.end_date.split('T')[1]
+              return heuredebut.split(':00+')[0] + ' — ' + heurefin.split(':00+')[0]
+            }
+          },
+          // { title : "Durée", type : 'time', render: rowData => {
+          //   let duree = rowData.duration.split('T')[1]
+          //   let heures = duree.split('H')[0]
+          //   let minutes = duree.split('H')[1]
+          //   minutes = minutes.split('M')[0]
+          //   return (heures + 'h' + minutes +'min.')
+          // }}, a mettre dans super_event/id !!
 
+          {
+            title: 'Type',
+            field: 'type_label',
+            render: (row) => capitalize(row.type_label),
+            defaultFilter: type
+          },
+          { title: 'Titre', field: 'title_label', defaultFilter: titre },
+          {
+            title: 'Format',
+            field: 'format_label',
+            render: (row) => capitalize(row.format_label),
+            defaultFilter: format
+          },
+          {
+            title: 'Compositeur•rice•s mentionné•e•s',
+            field: 'composers_count'
+          },
+          {
+            title: 'Interprètes mentionné•e•s',
+            field: 'performers_count'
+          },
+          {
+            title: 'Œuvres mentionnées',
+            field: 'works_count'
+          }
+        ]}
+        options={{
+          pageSize: 20,
+          pageSizeOptions: [20, 100],
+          filtering: true,
+          sorting: true,
+          cellStyle: { paddingBottom: '0.3em', paddingTop: '0.3em' },
+          headerStyle: { paddingBottom: '0.3em', paddingTop: '0.3em' }
+        }}
+        data={data}
+        onRowClick={(e, selectedRow) => {
+          if (e.target.nodeName === 'A') return
+          const progId = selectedRow.super_event.slice(-36)
+          history.push('/super_event/' + progId)
+        }}
+      />
+    </>
+  )
+}
 
 export default withRouter(Programs)

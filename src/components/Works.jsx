@@ -1,17 +1,25 @@
-import lodash from 'lodash'
 import { Container } from '@material-ui/core'
 import { CircularProgress } from '@material-ui/core'
 import MaterialTable from 'material-table'
-import React from 'react'
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { withRouter } from 'react-router'
+import { Link } from 'react-router-dom'
 
 function Works({ history }) {
   const [data, setData] = useState([])
 
   async function fetchData() {
-    const res = await fetch('http://data-iremus.huma-num.fr/api/musrad30/works/')
-    res.json().then((res) => setData(computeData(res)))
+    const res = await fetch(process.env.REACT_APP_SHERLOCK_SERVICE_BASE_URL + 'musrad30/works/')
+    res.json().then((res) =>
+      setData(
+        res.map((c) => ({
+          ...c,
+          composers_text: c.composers
+            ? c.composers.map((c) => (c.given_name ? c.given_name : '') + ' ' + c.surname)
+            : 'Anonyme'
+        }))
+      )
+    )
   }
 
   useEffect(() => {
@@ -28,27 +36,28 @@ function Works({ history }) {
       columns={[
         {
           title: 'Nom',
-          field: 'work_name',
+          field: 'name',
           customSort: (a, b) => {
-            if (!a.work_name && !b.work_name) return 0
-            if (!a.work_name) return 1
-            if (!b.work_name) return -1
-            return a.work_name.localeCompare(b.work_name)
+            if (!a.name && !b.name) return 0
+            if (!a.name) return 1
+            if (!b.name) return -1
+            return a.name.localeCompare(b.name)
           }
         },
         {
           title: 'Compositeur•rice•s',
-          field: 'composer',
+          field: 'composers_text',
           filtering: true,
           sorting: false,
           render: (r) => {
-            if (r.composer[0]) {
-              let chaine = ''
-              for (let i = 0; i < r.composer.length - 1; i++) {
-                chaine = chaine + r.composer[i] + ', '
-              }
-              chaine = chaine + r.composer[r.composer.length - 1]
-              return chaine
+            if (r.composers && r.composers.length > 0) {
+              return r.composers
+                .map((c) => (
+                  <Link className='link' key={c.id} to={'/musician/' + c.id.slice(-36)}>
+                    {(c.given_name ? c.given_name : '') + ' ' + c.surname}
+                  </Link>
+                ))
+                .reduce((prev, curr) => [prev, ', ', curr])
             } else return 'Anonyme'
           }
         }
@@ -62,29 +71,13 @@ function Works({ history }) {
         headerStyle: { paddingBottom: '0.3em', paddingTop: '0.3em' }
       }}
       data={data}
-      onRowClick={(evt, selectedRow) => {
-        const workId = selectedRow.work.slice(-36)
+      onRowClick={(e, selectedRow) => {
+        if (e.target.nodeName === 'A') return
+        const workId = selectedRow.id.slice(-36)
         history.push('/work/' + workId)
       }}
     ></MaterialTable>
   )
-}
-
-function computeData(res) {
-  res = res.filter((w) => w.work_name || w.composer)
-  let newData = []
-  const data = lodash.groupBy(res, 'work')
-  for (const work in data) {
-    const composers = data[work].map((item) =>
-      item.composer_surname
-        ? (item.composer_given_name ? item.composer_given_name + ' ' : '') + item.composer_surname
-        : null
-    )
-    data[work][0].composer = composers
-    newData.push(data[work][0])
-  }
-
-  return newData
 }
 
 export default withRouter(Works)

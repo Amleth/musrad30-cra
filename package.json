@@ -10,12 +10,12 @@
     "eject": "react-scripts eject"
   },
   "dependencies": {
-    "@material-ui/core": "^4.10.2",
+    "@material-ui/core": "^4.11.0",
     "@material-ui/icons": "^4.9.1",
     "clsx": "^1.1.1",
-    "date-fns": "^2.14.0",
-    "lodash": "^4.17.15",
-    "material-table": "^1.61.0",
+    "date-fns": "^2.15.0",
+    "lodash": "^4.17.19",
+    "material-table": "^1.67.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-router-dom": "^5.2.0",

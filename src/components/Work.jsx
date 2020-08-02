@@ -29,6 +29,19 @@ function Work({ history, match }) {
       </Container>
     )
   } else {
+    // <<<<<<< HEAD
+    // =======
+
+    //     const compositeurs = <List>
+    //       {(data.composers
+    //       ? data.composers.map((c) => (
+    //       <ListItem key={c.composer}> <Link key={c.composer} href={'/musician/' + c.composer.slice(-36)}> {(c.composer_given_name ? c.composer_given_name : '') + ' ' + c.composer_surname} </Link> </ListItem>
+    //       ))
+    //       : <ListItem> 'Compositeur Anonyme') </ListItem>)
+    //     }
+    //        </List>
+
+    // >>>>>>> 052e8f27ac958522988626ff05b32b2a8bfad9be
     return (
       <Container maxWidth='md'>
         <Typography component='h1' variant='h4'>

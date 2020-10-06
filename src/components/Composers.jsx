@@ -82,7 +82,7 @@ function Composers({ history }) {
       <MaterialTable
         title='Liste des compositeur•rice•s'
         columns={[
-          { title: 'Nom', field: 'surname', defaultSort: 'asc' },
+          { title: 'Nom', field: 'family_name', defaultSort: 'asc' },
           { title: 'Prénom', field: 'given_name' },
           { title: 'Nationalité', field: 'nationality_label' },
           { title: 'Style', field: 'style_label', defaultFilter: style },

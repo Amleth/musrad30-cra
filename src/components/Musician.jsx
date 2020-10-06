@@ -88,7 +88,7 @@ function Musician({ history, match }) {
       <Container maxWidth='md'>
         <div className={classes.root}>
           <div className={classes.form}>
-            {makeTextField('Nom', musicianData.surname)}
+            {makeTextField('Nom', musicianData.family_name)}
             {makeTextField('Prénom', musicianData.given_name)}
             {makeTextField('Dates', datesMusicien)}
             {makeTextField('Statut', statuts)}
@@ -174,12 +174,12 @@ function Musician({ history, match }) {
                 title: 'Heures'
               },
               {
-                field: 'composer_surname',
+                field: 'composer_family_name',
                 render: (row) =>
                   row.composer ? (
                     <Link className='link' to={'/musician/' + row.composer.slice(-36)}>
                       {(row.composer_given_name ? row.composer_given_name + ' ' : '') +
-                        row.composer_surname}
+                        row.composer_family_name}
                     </Link>
                   ) : (
                     'Anonyme'

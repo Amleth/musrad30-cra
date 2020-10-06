@@ -2,6 +2,7 @@ import lodash from 'lodash'
 import { Container } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import MaterialTable from 'material-table'
+import moment from 'moment'
 import React, { useEffect, useState } from 'react'
 import { withRouter } from 'react-router'
 import { Link } from 'react-router-dom'
@@ -35,11 +36,9 @@ function Program({ history, match }) {
     let heurefin = !data[0].end_date ? '' : data[0].end_date.split('T')[1]
     let plageHoraire = heuredebut.split(':00+')[0] + ' - ' + heurefin.split(':00+')[0]
 
-    let duree = data[0].duration.split('T')[1]
-    const heures = duree.split('H')[0]
-    let minutes = duree.split('H')[1]
-    minutes = minutes.split('M')[0]
-    duree = heures + 'h' + minutes + 'min.'
+    const duration = data[0].duration
+      ? moment.duration(data[0].duration.split('^^')[0])
+      : ''
 
     return (
       <Container maxWidth='md'>
@@ -49,17 +48,17 @@ function Program({ history, match }) {
           {makeTextField(
             'Date de diffusion',
             data[0].jour_debut_diffusion +
-              ' ' +
-              (!data[0].start_date
-                ? ''
-                : data[0].start_date.slice(8, 10) +
-                  '/' +
-                  data[0].start_date.slice(5, 7) +
-                  '/' +
-                  data[0].start_date.slice(0, 4))
+            ' ' +
+            (!data[0].start_date
+              ? ''
+              : data[0].start_date.slice(8, 10) +
+              '/' +
+              data[0].start_date.slice(5, 7) +
+              '/' +
+              data[0].start_date.slice(0, 4))
           )}
           {makeTextField('Plage horaire', plageHoraire)}
-          {makeTextField('Durée', duree)}
+          {makeTextField('Durée', duration.hours() + 'h ' + duration.minutes() + 'm')}
           {makeTextField('Description', description, true, true)}
         </form>
         <br />
@@ -75,8 +74,8 @@ function Program({ history, match }) {
                     {row.work_name}
                   </Link>
                 ) : (
-                  'Sans titre'
-                )
+                    'Sans titre'
+                  )
             },
             {
               title: 'Compositeurs',
@@ -90,8 +89,8 @@ function Program({ history, match }) {
                         {composers[c]}
                       </Link>
                     ) : (
-                      'Anonyme'
-                    )
+                        'Anonyme'
+                      )
                   )
                   .reduce((prev, curr) => [prev, ', ', curr])
               }
@@ -106,8 +105,8 @@ function Program({ history, match }) {
                         {performers[p]}
                       </Link>
                     ) : (
-                      'Anonyme'
-                    )
+                        'Anonyme'
+                      )
                   )
                   .reduce((prev, curr) => [prev, ', ', curr])
               },
@@ -143,8 +142,8 @@ function computeData(res) {
       item.performer_given_name ? item.performer_given_name : null
     )
 
-    const performers_surname = data[work].map((item) =>
-      item.performer_surname ? item.performer_surname : null
+    const performers_family_name = data[work].map((item) =>
+      item.performer_family_name ? item.performer_family_name : null
     )
 
     const performers = data[work].map((item) => (item.performer ? item.performer : null))
@@ -153,16 +152,16 @@ function computeData(res) {
       item.composer_given_name ? item.composer_given_name : null
     )
 
-    const composers_surname = data[work].map((item) =>
-      item.composer_surname ? item.composer_surname : null
+    const composers_family_name = data[work].map((item) =>
+      item.composer_family_name ? item.composer_family_name : null
     )
 
     const composers = data[work].map((item) => (item.composer ? item.composer : null))
     data[work][0].performer_given_name = performers_given_name
-    data[work][0].performer_surname = performers_surname
+    data[work][0].performer_family_name = performers_family_name
     data[work][0].performer = performers
     data[work][0].composer_given_name = composers_given_name
-    data[work][0].composer_surname = composers_surname
+    data[work][0].composer_family_name = composers_family_name
     data[work][0].composer = composers
     newData.push(data[work][0])
   }
@@ -194,7 +193,7 @@ function compositeurs(r) {
     }
     for (let i = 0; i < tableauVerif.length; i++) {
       compositeurs[r.composer[i]] =
-        (r.composer_given_name[i] ? r.composer_given_name[i] + ' ' : '') + r.composer_surname[i]
+        (r.composer_given_name[i] ? r.composer_given_name[i] + ' ' : '') + r.composer_family_name[i]
     }
   } else compositeurs = null
 
@@ -212,7 +211,7 @@ function interpretes(r) {
     }
     for (let i = 0; i < tableauVerif.length; i++) {
       interpretes[r.performer[i]] =
-        (r.performer_given_name[i] ? r.performer_given_name[i] + ' ' : '') + r.performer_surname[i]
+        (r.performer_given_name[i] ? r.performer_given_name[i] + ' ' : '') + r.performer_family_name[i]
     }
   } else interpretes = null
   return interpretes

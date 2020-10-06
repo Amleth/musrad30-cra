@@ -35,7 +35,7 @@ function Work({ history, match }) {
     //     const compositeurs = <List>
     //       {(data.composers
     //       ? data.composers.map((c) => (
-    //       <ListItem key={c.composer}> <Link key={c.composer} href={'/musician/' + c.composer.slice(-36)}> {(c.composer_given_name ? c.composer_given_name : '') + ' ' + c.composer_surname} </Link> </ListItem>
+    //       <ListItem key={c.composer}> <Link key={c.composer} href={'/musician/' + c.composer.slice(-36)}> {(c.composer_given_name ? c.composer_given_name : '') + ' ' + c.composer_family_name} </Link> </ListItem>
     //       ))
     //       : <ListItem> 'Compositeur Anonyme') </ListItem>)
     //     }
@@ -53,7 +53,7 @@ function Work({ history, match }) {
             {data.composers
               .map((c) => (
                 <Link className='link' key={c.composer} to={'/musician/' + c.composer.slice(-36)}>
-                  {(c.composer_given_name ? c.composer_given_name : '') + ' ' + c.composer_surname}
+                  {(c.composer_given_name ? c.composer_given_name : '') + ' ' + c.composer_family_name}
                 </Link>
               ))
               .reduce((prev, curr) => [prev, ', ', curr])}
@@ -119,7 +119,7 @@ function Work({ history, match }) {
                         key={p.performer}
                         to={'/musician/' + p.performer.slice(-36)}
                       >
-                        {p.performer_surname}
+                        {p.performer_family_name}
                       </Link>
                     ))
                     .reduce((prev, curr) => [prev, ', ', curr])
